@@ -1,0 +1,10 @@
+html {
+  @apply bg-pureWhite scroll-smooth;
+  transition-property: background-color;
+  transition-duration: 600ms;
+  transition-timing-function: cubic-bezier(0.33, 1, 0.68, 1);
+
+  &.dark {
+    @apply bg-pureBlack;
+  }
+}

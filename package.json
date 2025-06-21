@@ -21,6 +21,7 @@
     "@unocss/reset": "^66.2.3",
     "clsx": "^2.1.1",
     "consola": "^3.4.2",
+    "eslint-plugin-format": "^1.0.1",
     "nuxt": "^3.17.5",
     "vue": "^3.5.16",
     "vue-router": "^4.5.1"
@@ -31,6 +32,7 @@
     "@unocss/nuxt": "^66.2.3",
     "animated-unocss": "^0.0.6",
     "eslint": "^9.29.0",
+    "sass-embedded": "^1.89.2",
     "unocss": "^66.2.3",
     "unocss-preset-animations": "^1.2.1",
     "unocss-preset-radix": "^2.8.2"

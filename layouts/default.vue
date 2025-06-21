@@ -1,17 +1,20 @@
 <script setup></script>
 
 <template>
-  <div class="relative">
+  <div
+    :class="useClsx(
+      'transition-colors duration-600 ease-[cubic-bezier(0.33,1,0.68,1)]',
+      'dark:bg-pureBlack bg-pureWhite',
+    )"
+  >
     <!-- Main Content -->
     <div
-        :class="useClsx(
-        'transition-colors duration-600 ease-[cubic-bezier(0.33,1,0.68,1)]',
-        'bg-pureBlack dark:bg-pureWhite',
+      :class="useClsx(
       )"
     >
       <!-- <Header/>  -->
       <main>
-        <slot name="default"/>
+        <slot name="default" />
       </main>
       <!-- <Footer /> -->
       <!-- <ScrollTopButton /> -->
