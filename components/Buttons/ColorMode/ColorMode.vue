@@ -1,5 +1,4 @@
 <script setup>
-// eslint-disable-next-line no-undef
 const colorMode = useColorMode()
 
 consola.debug(colorMode.preference)
@@ -7,7 +6,10 @@ consola.debug(colorMode.preference)
 
 <template>
   <div>
-    <h1>Color mode: {{ colorMode }}</h1>
+    <Icon
+      class="h-4 w-4 transition-all duration-300 ease-out group-hover:translate-x-1.5 group-hover:color-mint-11"
+      name="ri:arrow-right-line"
+    />
     <select v-model="colorMode.preference">
       <option value="system">
         System
@@ -24,4 +26,3 @@ consola.debug(colorMode.preference)
     </select>
   </div>
 </template>
-
