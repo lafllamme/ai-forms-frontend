@@ -21,7 +21,7 @@ up:
 
 # Run tests
 test:
-	pnpm test
+	pnpm testma
 
 # Build types with prepare script
 prepare:

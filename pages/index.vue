@@ -1,12 +1,14 @@
-<script setup lang="ts">
+<script lang="ts" setup>
 import ColorMode from '@/components/Buttons/ColorMode/ColorMode.vue'
 </script>
 
 <template>
-  <div class="bg-white-200 dark:bg-black-400 min-h-screen flex flex-col items-center justify-center">
-    <h2 class="font-light font-sans text-2xl antialiased color-blue-900">
-      Index Page
-    </h2>
-    <ColorMode />
+  <div class="px-4 py-4">
+    <div class="flex justify-center md:justify-start">
+      <h2 class="text-4xl antialiased tracking-tight font-sans font-light">
+        Welcome to AI Form Assistant
+      </h2>
+    </div>
+    <ColorMode/>
   </div>
 </template>

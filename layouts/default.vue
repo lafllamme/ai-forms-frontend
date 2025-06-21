@@ -1,21 +1,20 @@
-<script lang="ts" setup>
-
-</script>
+<script setup></script>
 
 <template>
-  <div>
-    <!-- Default entry -->
-    <h1
-      class="font-mono text-base dark:color-red8"
+  <div class="relative">
+    <!-- Main Content -->
+    <div
+        :class="useClsx(
+        'transition-colors duration-600 ease-[cubic-bezier(0.33,1,0.68,1)]',
+        'bg-pureBlack dark:bg-pureWhite',
+      )"
     >
-      Default Layout
-    </h1>
-    <main>
-      <slot name="default" />
-    </main>
+      <!-- <Header/>  -->
+      <main>
+        <slot name="default"/>
+      </main>
+      <!-- <Footer /> -->
+      <!-- <ScrollTopButton /> -->
+    </div>
   </div>
 </template>
-
-<style scoped>
-
-</style>
