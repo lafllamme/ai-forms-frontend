@@ -118,4 +118,3 @@ Learn more about deploying your Nuxt app in the
 ---
 
 Made with ❤️ for modern, conversational AI interfaces.
-

@@ -1,7 +1,7 @@
 <template>
   <NuxtLayout>
     <NuxtLoadingIndicator
-        :throttle="0"
+      :throttle="0"
     />
     <NuxtPage />
   </NuxtLayout>
