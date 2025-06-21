@@ -5,7 +5,7 @@
 <template>
 <div>
 <!-- Default entry -->
-  <h1>Default Layout</h1>
+  <h1 class="font-mono text-base">Default Layout</h1>
   <main>
     <slot name="default" />
   </main>
