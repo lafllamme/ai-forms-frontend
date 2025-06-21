@@ -6,7 +6,7 @@
   <div>
     <!-- Default entry -->
     <h1
-      class="font-mono text-base"
+      class="font-mono text-base dark:color-red8"
     >
       Default Layout
     </h1>
