@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import ColorMode from '@/components/Buttons/ColorMode/ColorMode.vue'
-
 const { data } = await useFetch('/api/chat')
 
 consola.debug('Data fetched from API:', data.value)
@@ -9,13 +7,12 @@ consola.debug('Data fetched from API:', data.value)
 <template>
   <div class="px-4 py-4">
     <div class="flex justify-center md:justify-start">
-      <h2 class="font-studio-feixen-serif-mono text-4xl font-medium tracking-tight antialiased">
+      <h2 class="font-prata text-4xl color-sky-12 font-medium tracking-tight antialiased">
         Welcome to AI Form Assistant
       </h2>
     </div>
-    <div>
+    <div class="font-studio-feixen-edgy h-[300vh] text-xl color-gray-11 tracking-tight">
       {{ data }}
     </div>
-    <ColorMode />
   </div>
 </template>

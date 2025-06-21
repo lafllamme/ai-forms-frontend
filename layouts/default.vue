@@ -1,4 +1,5 @@
-<script setup></script>
+<script setup>
+</script>
 
 <template>
   <div
@@ -7,13 +8,13 @@
       'dark:bg-pureBlack bg-pureWhite',
     )"
   >
+    <Header />
     <!-- Main Content -->
     <div
       :class="useClsx(
       )"
     >
-      <!-- <Header/>  -->
-      <main>
+      <main class="pt-[calc(4rem+1rem)]">
         <slot name="default" />
       </main>
       <!-- <Footer /> -->
