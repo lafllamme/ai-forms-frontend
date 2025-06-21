@@ -1,0 +1,87 @@
+@font-face {
+  font-family: 'Studio Feixen Sans';
+  src: url('./Headline/StudioFeixenSans.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Studio Feixen Edgy';
+  src: url('./Headline/StudioFeixenEdgy.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Studio Feixen Edgy Bold';
+  src: url('./Headline/StudioFeixenEdgyBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Studio Feixen Sans Bold';
+  src: url('./Headline/StudioFeixenSansBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Studio Feixen Mono';
+  src: url('./Headline/StudioFeixenMono.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Studio Feixen Mono Bold';
+  src: url('./Headline/StudioFeixenMonoBold.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Studio Feixen Serif';
+  src: url('./Headline/StudioFeixenSerif.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Studio Feixen Serif Bold';
+  src: url('./Headline/StudioFeixenSerifBold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-studio-feixen-sans {
+  font-family: 'Studio Feixen Sans', sans-serif;
+}
+
+.font-studio-feixen-sans-bold {
+  font-family: 'Studio Feixen Sans Bold', sans-serif;
+}
+
+.font-studio-feixen-mono {
+  font-family: 'Studio Feixen Mono', sans-serif;
+}
+
+.font-studio-feixen-mono-bold {
+  font-family: 'Studio Feixen Mono Bold', sans-serif;
+}
+
+.font-studio-feixen-serif {
+  font-family: 'Studio Feixen Serif', serif;
+}
+
+.font-studio-feixen-serif-bold {
+  font-family: 'Studio Feixen Serif Bold', serif;
+}
+
+.font-studio-feixen-edgy {
+  font-family: 'Studio Feixen Edgy', sans-serif;
+}
+
+.font-studio-feixen-edgy-bold {
+  font-family: 'Studio Feixen Edgy Bold', sans-serif;
+}
