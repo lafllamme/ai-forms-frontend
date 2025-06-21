@@ -16,6 +16,11 @@ export default defineNuxtConfig({
     storageKey: 'color-mode',
   },
 
+  // Global CSS
+  css: [
+    '@/assets/reset/main.ts',
+  ],
+
   modules: [
     '@nuxt/fonts',
     '@nuxt/icon',
