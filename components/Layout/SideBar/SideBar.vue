@@ -17,7 +17,7 @@ function handleHover() {
 
 watch(sidebarOpen, () => {
   hasHovered.value = false
-})
+}, { immediate: true })
 </script>
 
 <template>
@@ -38,7 +38,7 @@ watch(sidebarOpen, () => {
         @mouseleave="handleHover"
       >
         <Icon
-          v-if="!hasHovered && !sidebarOpen"
+          v-if="!!hasHovered"
           class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
           name="tabler:robot"
         />
