@@ -3,9 +3,16 @@
 import SideBarItem from '@/components/Layout/SideBarItem/SideBarItem.vue'
 
 const sidebarOpen = ref(false)
+const hasHovered = ref(false)
 
 function toggleSidebar() {
   sidebarOpen.value = !sidebarOpen.value
+}
+
+// change iconName from tabler:robot to tabler:sidebar
+function handleHover() {
+  consola.debug('Sidebar hover')
+  hasHovered.value = !hasHovered.value
 }
 </script>
 
@@ -23,10 +30,18 @@ function toggleSidebar() {
         class="group hover:bg-color-gray-12 mb-6 mt-2 h-12 w-12 flex items-center justify-center rounded-full bg-sky-4 transition transition-colors duration-300 ease-out hover:bg-sky-6"
         title="Toggle sidebar"
         @click="toggleSidebar"
+        @mouseenter="handleHover"
+        @mouseleave="handleHover"
       >
         <Icon
+          v-if="!hasHovered && sidebarOpen"
           class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
           name="tabler:robot"
+        />
+        <Icon
+          v-else
+          class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
+          name="tabler:layout-sidebar-filled"
         />
       </button>
 
