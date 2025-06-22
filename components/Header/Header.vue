@@ -28,7 +28,7 @@ function onKeydown(e: KeyboardEvent) {
       'z-50 max-w-2xl min-w-[340px] w-[90vw]',
       'flex items-center justify-between overflow-hidden',
       'border border-[rgba(255,255,255,0.22)] rounded-full bg-[rgba(245,245,255,0.22)]', 'p-2 pl-6 pr-4 shadow-xl outline-none transition-all duration-500',
-      'md:w-[60vw] -translate-x-1/2 hover:shadow-2xl',
+      '-translate-x-1/2 hover:shadow-2xl',
     )"
     aria-label="Main Header"
     role="banner"
@@ -50,7 +50,7 @@ function onKeydown(e: KeyboardEvent) {
       />
       <span
         aria-label="LiquidGlass UI"
-        class="geist-regular text-xl color-sky-11 font-bold tracking-tight group-hover:color-pureBlack dark:group-hover:color-pureWhite"
+        class="geist-regular text-lg color-sky-11 font-bold tracking-tight md:text-xl group-hover:color-pureBlack dark:group-hover:color-pureWhite"
       >
         AI Form Assistant
       </span>
@@ -65,7 +65,7 @@ function onKeydown(e: KeyboardEvent) {
           'font-medium tracking-normal transition-colors duration-300',
           'hover:color-sky-8 focus-visible:color-sky-8',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
-          'focus-visible:ring-offset-2',
+          'focus-visible:ring-offset-2 text-xs md:text-base',
         )"
         :tabindex="0"
         href="#"

@@ -66,7 +66,7 @@ function handleEnter(e: KeyboardEvent) {
                 ? 'bg-sky-4 text-white rounded-br-none'
                 : 'bg-gray-6 text-base-content rounded-bl-none border border-base-300',
             ]"
-            class="font-manrope max-w-[75%] break-words rounded-xl px-4 py-2 color-pureBlack shadow transition-colors duration-200 dark:color-pureWhite"
+            class="font-manrope max-w-[70%] break-words rounded-xl px-4 py-2 color-pureBlack shadow transition-colors duration-200 dark:color-pureWhite"
           >
             <span v-html="msg.content" />
           </div>
@@ -81,29 +81,38 @@ function handleEnter(e: KeyboardEvent) {
 
     <!-- Input field -->
     <form
-      class="flex gap-2"
+      class="flex items-center justify-center gap-4"
       @submit.prevent="sendMessage"
     >
-      <textarea
-        v-model="userInput"
-        :disabled="isLoading"
-        class="geist-regular flex-1 resize-none border rounded-full bg-gray-2 p-3 color-gray-12 font-medium tracking-tight transition focus:outline-none focus:ring-2 focus:ring-primary/60"
-        placeholder="Deine Nachricht …"
-        rows="1"
-        @keydown="handleEnter"
-      />
-      <div
-        class="aspect-square flex items-center justify-center rounded-full bg-pureBlack color-sky-11 transition dark:bg-pureWhite"
-        type="submit"
-      >
-        <button
-          :disabled="isDisabled"
-          class="aspect-square"
-          tabindex="0" type="button"
-        >
-          <Icon v-if="!isLoading" class="size-6" name="iconoir:arrow-up" />
-          <Icon v-else class="size-6 animate-spin" name="tabler:circle-dashed" />
-        </button>
+      <div class="max-w-[40rem] w-full flex flex-col justify-start gap-4 border rounded-[28px] bg-gray-2 p-5">
+        <textarea
+          v-model="userInput"
+          :class="useClsx(
+            'geist-regular w-full',
+            'resize-none bg-transparent p-3 color-gray-12',
+            'font-medium tracking-tight transition placeholder:hidden focus:outline-none',
+          )"
+          :disabled="isLoading"
+          autofocus
+          placeholder="Stelle irgendeine Frage"
+          rows="1"
+          @keydown="handleEnter"
+        />
+        <div class="flex items-center justify-end">
+          <div
+            class="aspect-square flex items-center justify-center rounded-full bg-pureBlack p-2 color-sky-5 transition dark:bg-pureWhite"
+            type="submit"
+          >
+            <button
+              :disabled="isDisabled"
+              class="aspect-square"
+              tabindex="0" type="button"
+            >
+              <Icon v-if="!isLoading" class="size-6" name="iconoir:arrow-up" />
+              <Icon v-else class="size-6 animate-spin" name="tabler:circle-dashed" />
+            </button>
+          </div>
+        </div>
       </div>
     </form>
 
