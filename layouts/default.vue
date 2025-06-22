@@ -8,7 +8,9 @@
       'dark:bg-pureBlack bg-pureWhite',
     )"
   >
-    <div class="absolute right-5 top-5 flex items-center rounded-full bg-sky-12A p-2 py-px color-sky-5">
+    <div
+      class="absolute right-0 top-1 flex items-center rounded-full bg-sky-12A p-2 py-px color-sky-5 md:right-5 md:top-5"
+    >
       <span class="figtree-regular text-sm font-light">Beta</span>
     </div>
     <Header />

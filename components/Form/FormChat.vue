@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import ChatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
+
 const formId = useId()
 const timeToInt = new Date().getTime() / 1000
 const chatFormId = ref(`${formId}-chat-${timeToInt}`)
@@ -34,8 +36,9 @@ async function sendMessage() {
   isLoading.value = true
   const start = performance.now()
   try {
-    await sendFormChat(userInput.value, chatFormId.value)
+    const inputContent = userInput.value.trim()
     userInput.value = ''
+    await sendFormChat(inputContent, chatFormId.value)
   }
   finally {
     requestTime.value = Math.round(performance.now() - start)
@@ -86,29 +89,15 @@ function onGrowSpinEnd() {
 
 <template>
   <div
-    class="w-full flex flex-col border bg-gray-3 p-6 h-svh"
+    class="w-full flex flex-col border bg-gray-3 p-6"
   >
     <!-- Header -->
-    <div class="mb-4 flex items-center">
-      <div class="flex items-center justify-center gap-2 pb-4 md:justify-start">
-        <div class="group size-12 flex items-center justify-center rounded-full bg-sky-1 hover:bg-sky-3">
-          <Icon class="size-6 color-sky-12" name="iconoir:chat-bubble-empty" />
-        </div>
-        <div>
-          <h2 class="font-prata text-xl color-sky-12 font-medium tracking-tight antialiased">
-            Smart Form Assistant
-          </h2>
-          <p class="color-gray-11 font-thin">
-            Intelligente Formular-Begleitung
-          </p>
-        </div>
-      </div>
-    </div>
+    <ChatHeader class="md:hidden" />
 
     <!-- Chat window -->
     <div
       ref="chatWindow"
-      class="scrollbar-none mb-4 flex-1 overflow-y-hidden pr-1 space-y-2"
+      class="scrollbar-none mb-4 flex-1 overflow-y-auto pr-1 space-y-2"
     >
       <template v-for="(msg, idx) in chatHistory" :key="idx">
         <div
