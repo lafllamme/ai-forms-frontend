@@ -11,7 +11,7 @@ consola.debug('Data fetched from API:', data.value)
     <div class="w-3/4 flex justify-center">
       <FormChat />
     </div>
-    <div class="my-24 w-1/4 flex justify-center b-l-1 border-sky-11 border-solid color-sky-11">
+    <div class="w-1/4 flex justify-center b-l-1 border-sky-11 border-solid bg-gray-3 py-24 color-sky-11">
       <p class="font-manrope text-center font-medium tracking-tight antialiased">
         Summary of the form status
       </p>

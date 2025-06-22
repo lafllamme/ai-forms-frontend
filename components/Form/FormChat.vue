@@ -1,12 +1,15 @@
 <script lang="ts" setup>
 const formId = useId()
-const chatFormId = ref(`${formId}-chat`)
+const timeToInt = new Date().getTime() / 1000
+const chatFormId = ref(`${formId}-chat-${timeToInt}`)
 const { chatHistory, sendFormChat, clearChat } = useChat()
 
 const userInput = ref('')
 const isLoading = ref(false)
 const requestTime = ref<number | null>(null)
 const isDisabled = computed(() => isLoading.value || !userInput.value.trim())
+const textArea = useTemplateRef('textArea')
+const chatWindow = useTemplateRef('chatWindow')
 
 async function sendMessage() {
   if (!userInput.value.trim())
@@ -23,17 +26,40 @@ async function sendMessage() {
   }
 }
 
+function focusTextarea() {
+  if (textArea.value) {
+    textArea.value.focus()
+  }
+}
+
+function scrollToBottom() {
+  consola.debug('[Chat] Scrolling to bottom')
+  if (chatWindow.value) {
+    chatWindow.value.scrollTo({
+      top: chatWindow.value.scrollHeight,
+      behavior: 'smooth',
+    })
+  }
+}
+
 function handleEnter(e: KeyboardEvent) {
   if (e.key === 'Enter' && !e.shiftKey) {
     e.preventDefault()
     sendMessage()
   }
 }
+
+watch([chatHistory, isLoading], () => {
+  consola.info('[Chat] Using chat form ID:', chatFormId.value)
+  nextTick(() => {
+    scrollToBottom()
+  })
+})
 </script>
 
 <template>
   <div
-    class="w-full flex flex-col border bg-transparent p-6 h-svh"
+    class="w-full flex flex-col border bg-gray-3 p-6 h-svh"
   >
     <!-- Header -->
     <div class="mb-4 flex items-center">
@@ -53,7 +79,10 @@ function handleEnter(e: KeyboardEvent) {
     </div>
 
     <!-- Chat window -->
-    <div class="mb-4 flex-1 overflow-y-auto pr-1 space-y-2">
+    <div
+      ref="chatWindow"
+      class="scrollbar-none mb-4 flex-1 overflow-y-hidden pr-1 space-y-2"
+    >
       <template v-for="(msg, idx) in chatHistory" :key="idx">
         <div
           :class="[
@@ -82,14 +111,16 @@ function handleEnter(e: KeyboardEvent) {
     <!-- Input field -->
     <form
       class="flex items-center justify-center gap-4"
+      @click="focusTextarea"
       @submit.prevent="sendMessage"
     >
       <div class="max-w-[40rem] w-full flex flex-col justify-start gap-4 border rounded-[28px] bg-gray-2 p-5">
         <textarea
+          ref="textArea"
           v-model="userInput"
           :class="useClsx(
-            'geist-regular w-full',
-            'resize-none bg-transparent p-3 color-gray-12',
+            'geist-regular w-full selection:color-sky-2 selection:bg-sky-11',
+            'resize-none bg-transparent color-gray-12',
             'font-medium tracking-tight transition placeholder:hidden focus:outline-none',
           )"
           :disabled="isLoading"
@@ -119,10 +150,18 @@ function handleEnter(e: KeyboardEvent) {
     <!-- Debug panel -->
     <div class="mt-2 flex items-center justify-between text-xs text-gray-11">
       <span>API endpoint: <code class="text-xs">{{ $config.public.formChatApi || '/api/chat' }}</code></span>
-      <span v-if="requestTime !== null">
-        ⏱️ Antwortzeit: <b>{{ requestTime }}ms</b>
-      </span>
-      <button class="text-gray-500 ml-4 text-xs hover:underline" @click="clearChat">
+      <div
+        v-if="requestTime !== null"
+        class="flex items-center text-[11px]"
+      >
+        <Icon
+          class="sky-12 mr-1 size-3"
+          name="iconoir:timer"
+        />
+        <span class="mr-2">Antwortzeit: </span>
+        <span class="geist-regular mt-px leading-none tracking-tight">{{ requestTime }}ms</span>
+      </div>
+      <button class="ml-4 text-xs color-gray-11 hover:underline" @click="clearChat">
         Chat zurücksetzen
       </button>
     </div>
