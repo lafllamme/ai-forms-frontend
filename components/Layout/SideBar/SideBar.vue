@@ -34,7 +34,7 @@ function handleHover() {
         @mouseleave="handleHover"
       >
         <Icon
-          v-if="!hasHovered && sidebarOpen"
+          v-if="!hasHovered && !sidebarOpen"
           class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
           name="tabler:robot"
         />
