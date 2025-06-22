@@ -8,7 +8,11 @@ function handleColorModeChange() {
   consola.debug(`Color mode changed to: ${colorMode.preference}`)
 }
 
-const isDark = computed(() => colorMode.value === 'dark')
+const isDark = computed(() => {
+  if (import.meta.server)
+    return 'dark'
+  return colorMode.value === 'dark'
+})
 </script>
 
 <template>

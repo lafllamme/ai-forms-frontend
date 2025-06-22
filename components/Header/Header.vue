@@ -45,8 +45,8 @@ function onKeydown(e: KeyboardEvent) {
       class="group flex select-none items-center gap-2 color-sky-11"
     >
       <Icon
-        class="size-8"
-        name="tabler:robot group-hover:color-pureBlack dark:group-hover:color-pureWhite"
+        class="size-8 color-sky-11 group-hover:color-pureBlack dark:group-hover:color-pureWhite"
+        name="tabler:robot"
       />
       <span
         aria-label="LiquidGlass UI"

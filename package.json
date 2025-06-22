@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.15.0",
+    "@iconify-json/iconoir": "^1.2.7",
     "@unocss/eslint-plugin": "^66.2.3",
     "@unocss/nuxt": "^66.2.3",
     "animated-unocss": "^0.0.6",
