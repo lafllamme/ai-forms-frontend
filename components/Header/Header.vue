@@ -42,15 +42,7 @@ function onKeydown(e: KeyboardEvent) {
     />
     <!-- Logo (use aria-label for screen readers) -->
     <div class="flex select-none items-center gap-2">
-      <svg aria-hidden="true" fill="none" height="36" viewBox="0 0 36 36" width="36">
-        <circle cx="18" cy="18" fill="url(#glass)" r="16" />
-        <defs>
-          <radialGradient id="glass" cx="50%" cy="50%" r="100%">
-            <stop offset="0%" stop-color="#f0f3ff" />
-            <stop offset="100%" stop-color="#c7d0e7" />
-          </radialGradient>
-        </defs>
-      </svg>
+      <Icon class="size-8 text-sky-11" name="tabler:robot" />
       <span
         aria-label="LiquidGlass UI"
         class="geist-regular text-xl color-sky-11 font-bold tracking-tight"
