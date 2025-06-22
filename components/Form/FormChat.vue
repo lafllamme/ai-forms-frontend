@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import ChatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 
-const formId = useId()
 const chatFormId = ref(generateChatFormId())
 const { chatHistory, sendFormChat, clearChat } = useChat()
 const isMounted = ref(false)
@@ -71,7 +70,7 @@ function handleEnter(e: KeyboardEvent) {
 
 function generateChatFormId() {
   const uuid = crypto.randomUUID()
-  return `${formId}-chat-${uuid}`
+  return `SESSION-${uuid}`
 }
 
 function resetChat() {
