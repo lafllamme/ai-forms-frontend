@@ -5,18 +5,25 @@ import SideBarItem from '@/components/Layout/SideBarItem/SideBarItem.vue'
 const sidebarOpen = ref(false)
 const hasHovered = ref(false)
 
+const showIconSide = computed(() => {
+  return hasHovered.value && !sidebarOpen.value
+})
+
 function toggleSidebar() {
   sidebarOpen.value = !sidebarOpen.value
 }
 
 // change iconName from tabler:robot to tabler:sidebar
 function handleHover() {
+  if (sidebarOpen.value)
+    hasHovered.value = false
   consola.debug('Sidebar hover')
   hasHovered.value = !hasHovered.value
 }
 
-watch(sidebarOpen, () => {
-  hasHovered.value = false
+watch(sidebarOpen, (open) => {
+  if (open)
+    hasHovered.value = false
 }, { immediate: true })
 </script>
 
@@ -38,14 +45,15 @@ watch(sidebarOpen, () => {
         @mouseleave="handleHover"
       >
         <Icon
-          v-if="!!hasHovered"
+          v-if="showIconSide"
           class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
-          name="tabler:robot"
+          name="tabler:layout-sidebar-filled"
         />
+
         <Icon
           v-else
           class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
-          name="tabler:layout-sidebar-filled"
+          name="tabler:robot"
         />
       </button>
 
