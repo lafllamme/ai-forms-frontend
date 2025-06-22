@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import ChatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
-
 const chatFormId = ref(generateChatFormId())
 const { chatHistory, sendFormChat, clearChat } = useChat()
 const isMounted = ref(false)
@@ -108,9 +106,6 @@ onMounted(() => {
   <div
     class="w-full flex flex-col border bg-gray-3 p-6 pt-24"
   >
-    <!-- Header -->
-    <ChatHeader class="md:hidden" />
-
     <h2
       :class="useClsx(
         isMounted ? 'animate-fade-in ' : 'opacity-0',
