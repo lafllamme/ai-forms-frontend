@@ -33,12 +33,23 @@ function handleEnter(e: KeyboardEvent) {
 
 <template>
   <div
-    class="max-w-xl min-h-[600px] flex flex-col border rounded-2xl bg-sand-3 p-6 shadow-xl"
+    class="w-full flex flex-col border bg-sand-3 p-6 shadow-xl h-svh"
   >
     <!-- Header -->
-    <div class="mb-4 flex items-center gap-2">
-      <span class="i-carbon-chat-bot text-2xl text-primary" />
-      <span class="ml-auto text-xs text-gray-11">Demo</span>
+    <div class="mb-4 flex items-center">
+      <div class="flex items-center justify-center gap-2 pb-4 md:justify-start">
+        <div class="group size-12 flex items-center justify-center rounded-full bg-sky-1 hover:bg-sky-3">
+          <Icon class="size-6 color-sky-12" name="iconoir:chat-bubble-empty" />
+        </div>
+        <div>
+          <h2 class="font-prata text-xl color-sky-12 font-medium tracking-tight antialiased">
+            Smart Form Assistant
+          </h2>
+          <p class="color-gray-11 font-thin">
+            Intelligente Formular-Begleitung
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- Chat window -->
@@ -55,7 +66,7 @@ function handleEnter(e: KeyboardEvent) {
                 ? 'bg-sky-4 text-white rounded-br-none'
                 : 'bg-gray-6 text-base-content rounded-bl-none border border-base-300',
             ]"
-            class="max-w-[75%] break-words rounded-xl px-4 py-2 color-pureBlack shadow transition-colors duration-200 dark:color-pureWhite"
+            class="font-manrope max-w-[75%] break-words rounded-xl px-4 py-2 color-pureBlack shadow transition-colors duration-200 dark:color-pureWhite"
           >
             <span v-html="msg.content" />
           </div>
@@ -64,7 +75,7 @@ function handleEnter(e: KeyboardEvent) {
       <!-- Loading spinner -->
       <div v-if="isLoading" class="mt-2 flex justify-start animate-pulse">
         <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-        <span class="ml-2 text-xs color-gray-10">Formular-Assistent denkt ...</span>
+        <span class="geist-regular ml-2 text-xs color-gray-10">Formular-Assistent denkt ...</span>
       </div>
     </div>
 

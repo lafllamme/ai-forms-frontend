@@ -41,11 +41,16 @@ function onKeydown(e: KeyboardEvent) {
       style="background: radial-gradient(circle at 60% 40%, rgba(255,255,255,0.13) 0%, transparent 50%)"
     />
     <!-- Logo (use aria-label for screen readers) -->
-    <div class="flex select-none items-center gap-2">
-      <Icon class="size-8 text-sky-11" name="tabler:robot" />
+    <div
+      class="group flex select-none items-center gap-2 color-sky-11"
+    >
+      <Icon
+        class="size-8"
+        name="tabler:robot group-hover:color-pureBlack dark:group-hover:color-pureWhite"
+      />
       <span
         aria-label="LiquidGlass UI"
-        class="geist-regular text-xl color-sky-11 font-bold tracking-tight"
+        class="geist-regular text-xl color-sky-11 font-bold tracking-tight group-hover:color-pureBlack dark:group-hover:color-pureWhite"
       >
         AI Form Assistant
       </span>
@@ -57,8 +62,8 @@ function onKeydown(e: KeyboardEvent) {
         :key="item"
         :ref="el => navLinks[i]! = el"
         :class="useClsx(
-          'text-slate-900 dark:text-slate-50 font-medium transition-colors duration-300',
-          'hover:text-blue-600 focus-visible:text-blue-600',
+          'font-medium tracking-normal transition-colors duration-300',
+          'hover:color-sky-8 focus-visible:color-sky-8',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
           'focus-visible:ring-offset-2',
         )"
