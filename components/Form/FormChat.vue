@@ -2,8 +2,7 @@
 import ChatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 
 const formId = useId()
-const uuid = crypto.randomUUID()
-const chatFormId = ref(`${formId}-chat-${uuid}`)
+const chatFormId = ref(generateChatFormId())
 const { chatHistory, sendFormChat, clearChat } = useChat()
 const isMounted = ref(false)
 
@@ -68,6 +67,16 @@ function handleEnter(e: KeyboardEvent) {
     e.preventDefault()
     sendMessage()
   }
+}
+
+function generateChatFormId() {
+  const uuid = crypto.randomUUID()
+  return `${formId}-chat-${uuid}`
+}
+
+function resetChat() {
+  clearChat()
+  chatFormId.value = generateChatFormId()
 }
 
 watch([chatHistory, isLoading], () => {
@@ -205,7 +214,7 @@ onMounted(() => {
         <span class="mr-2">Antwortzeit: </span>
         <span class="geist-regular mt-px leading-none tracking-tight">{{ requestTime }}ms</span>
       </div>
-      <button class="ml-4 text-xs color-gray-11 hover:underline" @click="clearChat">
+      <button class="ml-4 text-xs color-gray-11 hover:underline" @click="resetChat">
         Chat zurücksetzen
       </button>
     </div>
