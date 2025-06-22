@@ -2,7 +2,7 @@
 // Sidebar expand/collapse state
 import SideBarItem from '@/components/Layout/SideBarItem/SideBarItem.vue'
 
-const sidebarOpen = ref(true)
+const sidebarOpen = ref(false)
 
 function toggleSidebar() {
   sidebarOpen.value = !sidebarOpen.value

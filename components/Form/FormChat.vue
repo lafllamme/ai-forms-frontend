@@ -2,9 +2,10 @@
 import ChatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 
 const formId = useId()
-const timeToInt = new Date().getTime() / 1000
-const chatFormId = ref(`${formId}-chat-${timeToInt}`)
+const uuid = crypto.randomUUID()
+const chatFormId = ref(`${formId}-chat-${uuid}`)
 const { chatHistory, sendFormChat, clearChat } = useChat()
+const isMounted = ref(false)
 
 const userInput = ref('')
 const isLoading = ref(false)
@@ -89,6 +90,10 @@ function onGrowSpinEnd() {
     iconAnimPhase.value = 'spin'
   }
 }
+
+onMounted(() => {
+  isMounted.value = true
+})
 </script>
 
 <template>
@@ -98,15 +103,20 @@ function onGrowSpinEnd() {
     <!-- Header -->
     <ChatHeader class="md:hidden" />
 
-    <ClientOnly>
-      <h2 class="font-dm-mono text-xs text-sky-11 font-thin tracking-tight animate-fade-in-up uppercase">
-        {{ chatFormId }}
-      </h2>
-    </ClientOnly>
+    <h2
+      :class="useClsx(
+        isMounted ? 'animate-fade-in ' : 'opacity-0',
+        'text-sky-11 font-thin tracking-tight',
+        'uppercase',
+        'font-dm-mono mb-2 text-xs',
+      )"
+    >
+      {{ chatFormId }}
+    </h2>
     <!-- Chat window -->
     <div
       ref="chatWindow"
-      class="scrollbar-none mb-4 flex-1 overflow-y-auto pr-1 space-y-2"
+      class="scrollbar-none flex-1 overflow-y-auto pr-1 space-y-2"
     >
       <template v-for="(msg, idx) in chatHistory" :key="idx">
         <div
@@ -115,12 +125,14 @@ function onGrowSpinEnd() {
           ]" class="flex"
         >
           <div
-            :class="[
+            :class="useClsx(
+              'font-manrope slide-up max-w-[70%] break-words',
+              'rounded-xl px-4 py-2 color-pureBlack shadow',
+              'transition-colors duration-200 dark:color-pureWhite',
               msg.role === 'user'
                 ? 'bg-sky-4 text-white rounded-br-none'
                 : 'bg-gray-6 text-base-content rounded-bl-none border border-base-300',
-            ]"
-            class="font-manrope max-w-[70%] break-words rounded-xl px-4 py-2 color-pureBlack shadow transition-colors duration-200 dark:color-pureWhite"
+            )"
           >
             <span v-html="msg.content" />
           </div>
@@ -229,5 +241,19 @@ function onGrowSpinEnd() {
 
 .animate-spin-infinite {
   animation: spinInfinite 0.7s linear infinite;
+}
+
+/* Animation 4: Slide Up */
+.slide-up {
+  animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  opacity: 0;
+  transform: translateY(50px);
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 </style>

@@ -27,6 +27,14 @@ export function useChat() {
   // EXPLICITLY TYPE the chat history as ChatMessage[]
   const chatHistory = useState<ChatMessage[]>('formChatHistory', () => [])
 
+  // add initial welcome message
+  if (chatHistory.value.length === 0) {
+    chatHistory.value.push({
+      role: 'system',
+      content: 'Welcome to the chat! How can I assist you today?',
+    })
+  }
+
   /**
    * Send message to the /api/chat endpoint.
    * @param {string} message
