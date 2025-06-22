@@ -1,9 +1,8 @@
 <script lang="ts" setup>
 import ChatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 
-const formId = useId()
 const uuid = crypto.randomUUID()
-const chatFormId = ref(`${formId}-chat-${uuid}`)
+const chatFormId = ref(`SESSION-${uuid}`)
 const { chatHistory, sendFormChat, clearChat } = useChat()
 const isMounted = ref(false)
 
