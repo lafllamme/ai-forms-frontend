@@ -183,6 +183,7 @@ onMounted(() => {
               :disabled="isDisabled"
               class="aspect-square flex items-center"
               tabindex="0" type="button"
+              @click="sendMessage"
             >
               <Icon v-if="!isLoading" class="size-5" name="iconoir:arrow-up" />
               <Icon
