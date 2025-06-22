@@ -33,7 +33,7 @@ function handleEnter(e: KeyboardEvent) {
 
 <template>
   <div
-    class="w-full flex flex-col border bg-sand-3 p-6 shadow-xl h-svh"
+    class="w-full flex flex-col border bg-transparent p-6 h-svh"
   >
     <!-- Header -->
     <div class="mb-4 flex items-center">
