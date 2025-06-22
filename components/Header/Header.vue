@@ -21,7 +21,7 @@ function onKeydown(e: KeyboardEvent) {
 
 const menuEntries = ref([
   { label: 'Home', href: '#' },
-  { label: 'Guides', href: '#' },
+  { label: 'Docs', href: '#' },
   { label: 'Resources', href: '#' },
   { label: 'Concept', href: '#' },
 ])

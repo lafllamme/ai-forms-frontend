@@ -57,6 +57,9 @@ importers:
       '@iconify-json/iconoir':
         specifier: ^1.2.7
         version: 1.2.7
+      '@iconify-json/tabler':
+        specifier: ^1.2.19
+        version: 1.2.19
       '@unocss/eslint-plugin':
         specifier: ^66.2.3
         version: 66.2.3(eslint@9.29.0(jiti@2.4.2))(typescript@5.8.3)
@@ -560,6 +563,9 @@ packages:
 
   '@iconify-json/iconoir@1.2.7':
     resolution: {integrity: sha512-UDlx2WeWHqopfKRsjOta6fn/KkOhF0MmI2AxoYfakqtMLlznkTnrtY9QVuXZzsbvk+Gyavq2L39VjhcxGbt+LA==}
+
+  '@iconify-json/tabler@1.2.19':
+    resolution: {integrity: sha512-JDeQTQxHD8KE12pAbPVHX1WFVOPq8D0XfRb/LwYHwGwYE0HP9OIjJ//TKxS1Gt++RirYu6Xsx+Jm5LA5KbykoA==}
 
   '@iconify/collections@1.0.561':
     resolution: {integrity: sha512-Bn3YLaXwNwVpVUk6YfxOc1I69r7pAV7GsDtkknXAa0Fk4vlh3YxwQU5J8N8h++tRmw702IVjQm6csyAyFZuADQ==}
@@ -5711,6 +5717,10 @@ snapshots:
   '@humanwhocodes/retry@0.4.3': {}
 
   '@iconify-json/iconoir@1.2.7':
+    dependencies:
+      '@iconify/types': 2.0.0
+
+  '@iconify-json/tabler@1.2.19':
     dependencies:
       '@iconify/types': 2.0.0
 

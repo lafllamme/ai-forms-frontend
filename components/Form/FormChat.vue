@@ -73,6 +73,10 @@ watch([chatHistory, isLoading], () => {
   consola.info('[Chat] Using chat form ID:', chatFormId.value)
   nextTick(() => {
     scrollToBottom()
+    // focus the textarea after sending a message
+    if (textArea.value) {
+      textArea.value.focus()
+    }
   })
 })
 
@@ -89,11 +93,16 @@ function onGrowSpinEnd() {
 
 <template>
   <div
-    class="w-full flex flex-col border bg-gray-3 p-6"
+    class="w-full flex flex-col border bg-gray-3 p-6 pt-24"
   >
     <!-- Header -->
     <ChatHeader class="md:hidden" />
 
+    <ClientOnly>
+      <h2 class="font-dm-mono text-xs text-sky-11 font-thin tracking-tight animate-fade-in-up uppercase">
+        {{ chatFormId }}
+      </h2>
+    </ClientOnly>
     <!-- Chat window -->
     <div
       ref="chatWindow"

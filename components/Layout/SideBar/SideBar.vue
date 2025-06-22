@@ -94,7 +94,7 @@ function toggleSidebar() {
         class="mb-2 mt-6 h-10 w-10 flex items-center justify-center rounded-full transition hover:bg-gray-2"
         title="Einstellungen"
       >
-        <Icon class="size-6" name="tabler:settings" />
+        <Icon class="size-6 color-sky-11" name="tabler:settings" />
       </button>
     </aside>
   </div>
