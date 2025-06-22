@@ -5,8 +5,13 @@ defineEmits(['click'])
 
 <template>
   <button
+    :class="useClsx(
+      'hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-5',
+      'absolute z-30 h-14 w-7 flex items-center justify-center',
+      'border border-r-0 border-gray-2 rounded-l-xl',
+      'bg-gray-6 transition-all duration-200',
+    )"
     aria-label="Toggle chat summary"
-    class="absolute z-30 h-14 w-7 flex items-center justify-center border border-r-0 border-gray-2 rounded-l-xl bg-gray-6 transition-all duration-200 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-5"
     @click="$emit('click')"
   >
     <Icon

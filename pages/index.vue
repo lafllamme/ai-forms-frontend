@@ -11,8 +11,10 @@ consola.debug('Chat data fetched:', data.value)
 <template>
   <div class="relative flex bg-gray-3 h-svh">
     <SideBar />
-    <div class="w-full flex justify-center md:w-3/4">
-      <FormChat />
+    <div class="w-full flex justify-center">
+      <div class="max-w-[45rem] w-full flex">
+        <FormChat />
+      </div>
     </div>
     <!-- Collapsible summary panel WITH button inside -->
     <FormSummary />

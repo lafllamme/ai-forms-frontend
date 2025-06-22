@@ -104,18 +104,21 @@ onMounted(() => {
 
 <template>
   <div
-    class="w-full flex flex-col border bg-gray-3 p-6 pt-24"
+    class="w-full flex flex-col justify-center border bg-gray-3 p-6 pt-24"
   >
-    <h2
+    <div
       :class="useClsx(
         isMounted ? 'animate-fade-in ' : 'opacity-0',
-        'text-sky-11 font-thin tracking-tight',
-        'uppercase',
+        'font-thin tracking-tight',
+        'uppercase flex items-center gap-2',
         'font-dm-mono mb-2 text-xs',
       )"
     >
-      {{ chatFormId }}
-    </h2>
+      <span class="color-gray-10 lowercase">~/chat/</span>
+      <span class="color-sky-11"> {{ chatFormId }}</span>
+      <div class="h-4 w-2 bg-sky-8 animate-pulse" />
+    </div>
+
     <!-- Chat window -->
     <div
       ref="chatWindow"
