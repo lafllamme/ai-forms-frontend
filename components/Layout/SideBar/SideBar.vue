@@ -14,6 +14,10 @@ function handleHover() {
   consola.debug('Sidebar hover')
   hasHovered.value = !hasHovered.value
 }
+
+watch(sidebarOpen, () => {
+  hasHovered.value = false
+})
 </script>
 
 <template>
