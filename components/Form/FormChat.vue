@@ -11,6 +11,23 @@ const isDisabled = computed(() => isLoading.value || !userInput.value.trim())
 const textArea = useTemplateRef('textArea')
 const chatWindow = useTemplateRef('chatWindow')
 
+/**
+ * Controls which animation phase the loading icon is in:
+ * 'grow' = grow and spin once,
+ * 'spin' = infinite spinning,
+ * 'idle' = no animation
+ */
+const iconAnimPhase = ref<'idle' | 'grow' | 'spin'>('idle')
+
+watch(isLoading, (val) => {
+  if (val) {
+    iconAnimPhase.value = 'grow'
+  }
+  else {
+    iconAnimPhase.value = 'idle'
+  }
+})
+
 async function sendMessage() {
   if (!userInput.value.trim())
     return
@@ -55,6 +72,16 @@ watch([chatHistory, isLoading], () => {
     scrollToBottom()
   })
 })
+
+/**
+ * Listen for the end of the grow-and-spin animation on the icon.
+ * When it ends and loading is still active, switch to infinite spinning.
+ */
+function onGrowSpinEnd() {
+  if (isLoading.value) {
+    iconAnimPhase.value = 'spin'
+  }
+}
 </script>
 
 <template>
@@ -103,7 +130,6 @@ watch([chatHistory, isLoading], () => {
       </template>
       <!-- Loading spinner -->
       <div v-if="isLoading" class="mt-2 flex justify-start animate-pulse">
-        <div class="h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin" />
         <span class="geist-regular ml-2 text-xs color-gray-10">Formular-Assistent denkt ...</span>
       </div>
     </div>
@@ -136,11 +162,19 @@ watch([chatHistory, isLoading], () => {
           >
             <button
               :disabled="isDisabled"
-              class="aspect-square"
+              class="aspect-square flex items-center"
               tabindex="0" type="button"
             >
-              <Icon v-if="!isLoading" class="size-6" name="iconoir:arrow-up" />
-              <Icon v-else class="size-6 animate-spin" name="tabler:circle-dashed" />
+              <Icon v-if="!isLoading" class="size-5" name="iconoir:arrow-up" />
+              <Icon
+                v-else
+                :class="[
+                  iconAnimPhase === 'grow' ? 'animate-grow' : '',
+                  iconAnimPhase === 'spin' ? 'animate-spin-infinite' : '',
+                ]" class="size-5"
+                name="tabler:circle-dashed"
+                @animationend="iconAnimPhase === 'grow' ? onGrowSpinEnd() : undefined"
+              />
             </button>
           </div>
         </div>
@@ -167,3 +201,35 @@ watch([chatHistory, isLoading], () => {
     </div>
   </div>
 </template>
+
+<style scoped>
+/**
+  * Animation for an element that grows smooth with scale
+ */
+
+@keyframes grow {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes spinInfinite {
+  0% {
+    transform: scale(1.2) rotate(0deg);
+  }
+  100% {
+    transform: scale(1.2) rotate(360deg);
+  }
+}
+
+.animate-grow {
+  animation: grow 0.7s cubic-bezier(0.4, 2, 0.6, 1) forwards;
+}
+
+.animate-spin-infinite {
+  animation: spinInfinite 0.7s linear infinite;
+}
+</style>
