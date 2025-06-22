@@ -6,21 +6,13 @@ defineEmits(['click'])
 <template>
   <button
     aria-label="Toggle chat summary"
-    class="group fixed right-80 top-8 z-30 h-12 w-12 flex items-center justify-center rounded-full shadow-xl outline-none ring-2 ring-sky-5 transition-all duration-200 from-sky-7 to-sky-10 bg-gradient-to-br active:scale-95 hover:scale-105"
+    class="absolute z-30 h-14 w-7 flex items-center justify-center border border-r-0 border-gray-2 rounded-l-xl bg-gray-6 transition-all duration-200 hover:shadow-xl focus:outline-none focus:ring-2 focus:ring-sky-5"
     @click="$emit('click')"
   >
-    <span
-      :class="open ? 'rotate-180' : ''"
-      class="inline-block transition-transform duration-300"
-    >
-      <!-- You can use an icon font or SVG here. Example: -->
-      <svg
-        class="lucide lucide-chevron-right color-white" fill="none" height="28" stroke="currentColor" stroke-linecap="round"
-        stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24"
-        width="28"
-      >
-        <polyline points="9 18 15 12 9 6" />
-      </svg>
-    </span>
+    <Icon
+      :class="open ? '' : '-rotate-180'"
+      class="size-6 color-gray-12 transition-transform duration-300"
+      name="tabler-chevron-right"
+    />
   </button>
 </template>
