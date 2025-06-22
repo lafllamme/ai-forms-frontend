@@ -32,7 +32,7 @@ const menuEntries = ref([
     :class="useClsx(
       'group backdrop-blur-sm',
       'fixed left-1/2 top-6',
-      'z-50 max-w-2xl min-w-[340px] w-[30vw]',
+      'z-50 max-w-2xl min-w-[340px] md:min-w-[420px] w-[30vw]',
       'flex items-center justify-around overflow-hidden',
       'border rounded-full',
       'border-[rgba(0,0,0,0.06)] bg-[rgba(255,255,255,0.7)]',
@@ -72,7 +72,6 @@ const menuEntries = ref([
         :key="item.label"
         :ref="() => navLinks[i]"
         :class="useClsx(
-          i !== 0 && '<sm:hidden',
           'font-medium tracking-normal transition-colors duration-300',
           'hover:color-sky-8 focus-visible:color-sky-8',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500',
