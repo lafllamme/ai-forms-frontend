@@ -1,5 +1,13 @@
 <script lang="ts" setup>
-const chatFormId = ref(generateChatFormId())
+import consola from 'consola'
+import { storeToRefs } from 'pinia'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useChat } from '@/composables/useChat'
+import { useChatStore } from '@/stores/chat'
+import { generateSessionId } from '@/utils/uuid' // <--- utility as in previous messages
+
+const chatStore = useChatStore()
+const { sessionId } = storeToRefs(chatStore)
 const { chatHistory, sendFormChat, clearChat } = useChat()
 const isMounted = ref(false)
 
@@ -19,13 +27,18 @@ const chatWindow = useTemplateRef('chatWindow')
 const iconAnimPhase = ref<'idle' | 'grow' | 'spin'>('idle')
 
 watch(isLoading, (val) => {
-  if (val) {
-    iconAnimPhase.value = 'grow'
-  }
-  else {
-    iconAnimPhase.value = 'idle'
-  }
+  iconAnimPhase.value = val ? 'grow' : 'idle'
 })
+
+function generateSessionIdIfNeeded() {
+  if (!sessionId.value) {
+    const newId = generateSessionId()
+    chatStore.setSessionId(newId)
+    consola.debug('[Chat] Generated and set new sessionId:', newId)
+  }
+}
+
+generateSessionIdIfNeeded()
 
 async function sendMessage() {
   if (!userInput.value.trim())
@@ -35,7 +48,7 @@ async function sendMessage() {
   try {
     const inputContent = userInput.value.trim()
     userInput.value = ''
-    await sendFormChat(inputContent, chatFormId.value)
+    await sendFormChat(inputContent, sessionId.value)
   }
   finally {
     requestTime.value = Math.round(performance.now() - start)
@@ -44,9 +57,8 @@ async function sendMessage() {
 }
 
 function focusTextarea() {
-  if (textArea.value) {
+  if (textArea.value)
     textArea.value.focus()
-  }
 }
 
 function scrollToBottom() {
@@ -66,35 +78,23 @@ function handleEnter(e: KeyboardEvent) {
   }
 }
 
-function generateChatFormId() {
-  const uuid = crypto.randomUUID()
-  return `SESSION-${uuid}`
-}
-
 function resetChat() {
   clearChat()
-  chatFormId.value = generateChatFormId()
+  chatStore.setSessionId(generateSessionId())
 }
 
 watch([chatHistory, isLoading], () => {
-  consola.info('[Chat] Using chat form ID:', chatFormId.value)
+  consola.info('[Chat] Using chat session ID:', sessionId.value)
   nextTick(() => {
     scrollToBottom()
-    // focus the textarea after sending a message
-    if (textArea.value) {
+    if (textArea.value)
       textArea.value.focus()
-    }
   })
 })
 
-/**
- * Listen for the end of the grow-and-spin animation on the icon.
- * When it ends and loading is still active, switch to infinite spinning.
- */
 function onGrowSpinEnd() {
-  if (isLoading.value) {
+  if (isLoading.value)
     iconAnimPhase.value = 'spin'
-  }
 }
 
 onMounted(() => {
@@ -103,31 +103,24 @@ onMounted(() => {
 </script>
 
 <template>
-  <!-- OUTER: Fills the viewport, starts AT the top -->
   <div
     class="w-full flex flex-col border bg-gray-3"
     style="height: 100svh; overflow: hidden;"
   >
-    <!-- Everything INSIDE can scroll behind header! -->
     <div class="relative min-h-0 flex flex-1 flex-col">
-      <!-- The full chat content area scrolls, including session id -->
-      <div
-        ref="chatWindow"
-        class="flex-1 overflow-y-auto pr-1 space-y-2"
-        style="scroll-padding-top: 120px;"
-      >
-        <!-- Session ID at the top of chat, scrolls behind header -->
+      <div ref="chatWindow" class="flex-1 overflow-y-auto pr-1 space-y-2" style="scroll-padding-top: 120px;">
+        <!-- Session ID always from store! -->
         <div
           :class="useClsx(
             isMounted ? 'animate-fade-in' : 'opacity-0',
             'font-thin tracking-tight',
             'uppercase flex items-center gap-2',
             'font-dm-mono mb-2 text-xs',
-            'pt-24', // add top padding so it's never hidden completely
+            'pt-24',
           )"
         >
           <span class="color-gray-10 lowercase">~/chat/</span>
-          <span class="color-sky-11"> {{ chatFormId }}</span>
+          <span class="color-sky-11"> {{ sessionId }}</span>
           <div class="h-4 w-2 bg-sky-8 animate-pulse" />
         </div>
         <!-- Chat bubbles/messages -->

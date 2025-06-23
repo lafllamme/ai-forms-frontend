@@ -4,7 +4,7 @@ import consola from 'consola'
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig()
   const baseUrl = config.public.FORM_CHAT_API_URL
-  // url is http://localhost:8000/chat => remove /chat to get the base URL
+
   const baseUrlParts = baseUrl.split('/')
   const statusUrl = `${baseUrlParts.slice(0, -1).join('/')}/status`
 
