@@ -1,19 +1,50 @@
 <script lang="ts" setup>
-import ToggleButton from '~/components/Buttons/ToggleButton/ToggleButton.vue'
-import CheatHeader from '~/components/Chat/ChatHeader/CheatHeader.vue'
+import { storeToRefs } from 'pinia'
+import { ref } from 'vue'
+import ToggleButton from '@/components/Buttons/ToggleButton/ToggleButton.vue'
+import CheatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
+import { useStatus } from '@/composables/useStatus'
+import { useChatStore } from '@/stores/chat'
 
 const summaryOpen = ref(true)
+const status = useStatus()
+const chatStore = useChatStore()
+const { sessionId } = storeToRefs(chatStore)
+
+const { getStatus } = status
 
 function toggleSummary() {
   summaryOpen.value = !summaryOpen.value
 }
+
+const statusData = ref<any>(null)
+const isLoading = ref(false)
+const errorMsg = ref<string | null>(null)
+
+function fetchStatus() {
+  isLoading.value = true
+  getStatus(sessionId.value)
+    .then((res) => {
+      statusData.value = res // No .data!
+      errorMsg.value = null
+      isLoading.value = false
+      setTimeout(fetchStatus, 15000)
+    })
+    .catch((error) => {
+      statusData.value = null
+      errorMsg.value = 'Fehler beim Laden des Status'
+      isLoading.value = false
+      setTimeout(fetchStatus, 15000)
+    })
+}
+
+fetchStatus()
 </script>
 
 <template>
-  <!-- Always keep the container fixed to the right edge -->
   <div
     :style="{
-      width: summaryOpen ? '20rem' : '1.75rem', // 1.75rem == w-7 (button width)
+      width: summaryOpen ? '20rem' : '1.75rem',
       minWidth: summaryOpen ? '20rem' : '1.75rem',
       overflow: 'visible',
       boxShadow: summaryOpen ? '0 2px 24px 0 #0002' : '',
@@ -21,7 +52,6 @@ function toggleSummary() {
     }"
     class="fixed right-0 top-0 z-50 h-full flex items-start transition-all duration-300"
   >
-    <!-- The button is always present, just shifts with the panel -->
     <ToggleButton
       :class="useClsx(
         'absolute top-12 z-20 z-50',
@@ -30,7 +60,6 @@ function toggleSummary() {
       :open="summaryOpen"
       @click="toggleSummary"
     />
-    <!-- Content only visible when open -->
     <Transition mode="out-in" name="slide-panel">
       <div
         v-if="summaryOpen"
@@ -41,7 +70,35 @@ function toggleSummary() {
         <div class="mt-6 animate-fade-in">
           <CheatHeader />
         </div>
-        <!-- More summary content -->
+
+        <div class="mt-4">
+          <div v-if="isLoading" class="text-gray-400 text-xs">
+            Lade Status…
+          </div>
+          <div v-else-if="errorMsg" class="text-red-400 text-xs">
+            {{ errorMsg }}
+          </div>
+          <template v-else-if="statusData">
+            <h3 class="mb-2 text-lg font-bold">
+              Formular-Status
+            </h3>
+            <div class="text-xs leading-relaxed space-y-1">
+              <div><b>Phase:</b> {{ statusData.phase }}</div>
+              <div><b>Formular-ID:</b> {{ statusData.form_id }}</div>
+              <div>
+                <b>Answers:</b>
+                <ul class="ml-2 list-disc">
+                  <li v-for="(val, key) in statusData.answers" :key="key">
+                    <b>{{ key }}:</b> {{ val }}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </template>
+          <div v-else class="text-gray-400 text-xs">
+            Kein Status vorhanden.
+          </div>
+        </div>
       </div>
     </Transition>
   </div>

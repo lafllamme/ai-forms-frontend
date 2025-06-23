@@ -50,5 +50,6 @@ export default defineNuxtConfig({
     '@nuxt/test-utils',
     '@nuxtjs/color-mode',
     '@unocss/nuxt',
+    '@pinia/nuxt',
   ],
 })
