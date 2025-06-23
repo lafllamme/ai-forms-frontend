@@ -103,118 +103,127 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- OUTER: Fills the viewport, starts AT the top -->
   <div
-    class="w-full flex flex-col justify-center border bg-gray-3 p-6 pt-24"
+    class="w-full flex flex-col border bg-gray-3"
+    style="height: 100svh; overflow: hidden;"
   >
-    <div
-      :class="useClsx(
-        isMounted ? 'animate-fade-in ' : 'opacity-0',
-        'font-thin tracking-tight',
-        'uppercase flex items-center gap-2',
-        'font-dm-mono mb-2 text-xs',
-      )"
-    >
-      <span class="color-gray-10 lowercase">~/chat/</span>
-      <span class="color-sky-11"> {{ chatFormId }}</span>
-      <div class="h-4 w-2 bg-sky-8 animate-pulse" />
-    </div>
-
-    <!-- Chat window -->
-    <div
-      ref="chatWindow"
-      class="scrollbar-none flex-1 overflow-y-auto pr-1 space-y-2"
-    >
-      <template v-for="(msg, idx) in chatHistory" :key="idx">
-        <div
-          :class="[
-            msg.role === 'user' ? 'justify-end' : 'justify-start',
-          ]" class="flex"
-        >
-          <div
-            :class="useClsx(
-              'font-manrope slide-up max-w-[70%] break-words',
-              'rounded-xl px-4 py-2 color-pureBlack shadow',
-              'transition-colors duration-200 dark:color-pureWhite',
-              msg.role === 'user'
-                ? 'bg-sky-4 text-white rounded-br-none'
-                : 'bg-gray-6 text-base-content rounded-bl-none border border-base-300',
-            )"
-          >
-            <span v-html="msg.content" />
-          </div>
-        </div>
-      </template>
-      <!-- Loading spinner -->
-      <div v-if="isLoading" class="mt-2 flex justify-start animate-pulse">
-        <span class="geist-regular ml-2 text-xs color-gray-10">Formular-Assistent denkt ...</span>
-      </div>
-    </div>
-
-    <!-- Input field -->
-    <form
-      class="flex items-center justify-center gap-4"
-      @click="focusTextarea"
-      @submit.prevent="sendMessage"
-    >
-      <div class="max-w-[40rem] w-full flex flex-col justify-start gap-4 border rounded-[28px] bg-gray-2 p-5">
-        <textarea
-          ref="textArea"
-          v-model="userInput"
-          :class="useClsx(
-            'geist-regular w-full selection:color-sky-2 selection:bg-sky-11',
-            'resize-none bg-transparent color-gray-12',
-            'font-medium tracking-tight transition placeholder:hidden focus:outline-none',
-          )"
-          :disabled="isLoading"
-          autofocus
-          placeholder="Stelle irgendeine Frage"
-          rows="1"
-          @keydown="handleEnter"
-        />
-        <div class="flex items-center justify-end">
-          <div
-            class="aspect-square flex items-center justify-center rounded-full bg-pureBlack p-2 color-sky-5 transition dark:bg-pureWhite"
-            type="submit"
-          >
-            <button
-              :disabled="isDisabled"
-              class="aspect-square flex items-center"
-              tabindex="0" type="button"
-              @click="sendMessage"
-            >
-              <Icon v-if="!isLoading" class="size-5" name="iconoir:arrow-up" />
-              <Icon
-                v-else
-                :class="[
-                  iconAnimPhase === 'grow' ? 'animate-grow' : '',
-                  iconAnimPhase === 'spin' ? 'animate-spin-infinite' : '',
-                ]" class="size-5"
-                name="tabler:circle-dashed"
-                @animationend="iconAnimPhase === 'grow' ? onGrowSpinEnd() : undefined"
-              />
-            </button>
-          </div>
-        </div>
-      </div>
-    </form>
-
-    <!-- Debug panel -->
-    <div class="mt-2 flex items-center justify-between text-xs text-gray-11">
-      <span>API endpoint: <code class="text-xs">{{ $config.public.formChatApi || '/api/chat' }}</code></span>
+    <!-- Everything INSIDE can scroll behind header! -->
+    <div class="relative min-h-0 flex flex-1 flex-col">
+      <!-- The full chat content area scrolls, including session id -->
       <div
-        v-if="requestTime !== null"
-        class="flex items-center text-[11px]"
+        ref="chatWindow"
+        class="flex-1 overflow-y-auto pr-1 space-y-2"
+        style="scroll-padding-top: 120px;"
       >
-        <Icon
-          class="sky-12 mr-1 size-3"
-          name="iconoir:timer"
-        />
-        <span class="mr-2">Antwortzeit: </span>
-        <span class="geist-regular mt-px leading-none tracking-tight">{{ requestTime }}ms</span>
+        <!-- Session ID at the top of chat, scrolls behind header -->
+        <div
+          :class="useClsx(
+            isMounted ? 'animate-fade-in' : 'opacity-0',
+            'font-thin tracking-tight',
+            'uppercase flex items-center gap-2',
+            'font-dm-mono mb-2 text-xs',
+            'pt-24', // add top padding so it's never hidden completely
+          )"
+        >
+          <span class="color-gray-10 lowercase">~/chat/</span>
+          <span class="color-sky-11"> {{ chatFormId }}</span>
+          <div class="h-4 w-2 bg-sky-8 animate-pulse" />
+        </div>
+        <!-- Chat bubbles/messages -->
+        <template v-for="(msg, idx) in chatHistory" :key="idx">
+          <div
+            :class="[
+              msg.role === 'user' ? 'justify-end' : 'justify-start',
+            ]" class="flex"
+          >
+            <div
+              :class="useClsx(
+                'font-manrope slide-up max-w-[70%] break-words',
+                'rounded-xl px-4 py-2 color-pureBlack shadow',
+                'transition-colors duration-200 dark:color-pureWhite',
+                msg.role === 'user'
+                  ? 'bg-sky-4 text-white rounded-br-none'
+                  : 'bg-gray-6 text-base-content rounded-bl-none border border-base-300',
+              )"
+            >
+              <span v-html="msg.content" />
+            </div>
+          </div>
+        </template>
+        <!-- Loading spinner -->
+        <div v-if="isLoading" class="mt-2 flex justify-start animate-pulse">
+          <span class="geist-regular ml-2 text-xs color-gray-10">Formular-Assistent denkt ...</span>
+        </div>
+        <!-- Always keep space at the bottom for the input area -->
+        <div class="pb-8" />
       </div>
-      <button class="ml-4 text-xs color-gray-11 hover:underline" @click="resetChat">
-        Chat zurücksetzen
-      </button>
+      <!-- Input area & debug: sticky at the bottom -->
+      <form
+        class="flex items-center justify-center gap-4"
+        @click="focusTextarea"
+        @submit.prevent="sendMessage"
+      >
+        <div class="max-w-[40rem] w-full flex flex-col justify-start gap-4 border rounded-[28px] bg-gray-2 p-5">
+          <textarea
+            ref="textArea"
+            v-model="userInput"
+            :class="useClsx(
+              'geist-regular w-full selection:color-sky-2 selection:bg-sky-11',
+              'resize-none bg-transparent color-gray-12',
+              'font-medium tracking-tight transition placeholder:hidden focus:outline-none',
+            )"
+            :disabled="isLoading"
+            autofocus
+            placeholder="Stelle irgendeine Frage"
+            rows="1"
+            @keydown="handleEnter"
+          />
+          <div class="flex items-center justify-end">
+            <div
+              class="aspect-square flex items-center justify-center rounded-full bg-pureBlack p-2 color-sky-5 transition dark:bg-pureWhite"
+              type="submit"
+            >
+              <button
+                :disabled="isDisabled"
+                class="aspect-square flex items-center"
+                tabindex="0" type="button"
+                @click="sendMessage"
+              >
+                <Icon v-if="!isLoading" class="size-5" name="iconoir:arrow-up" />
+                <Icon
+                  v-else
+                  :class="[
+                    iconAnimPhase === 'grow' ? 'animate-grow' : '',
+                    iconAnimPhase === 'spin' ? 'animate-spin-infinite' : '',
+                  ]" class="size-5"
+                  name="tabler:circle-dashed"
+                  @animationend="iconAnimPhase === 'grow' ? onGrowSpinEnd() : undefined"
+                />
+              </button>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <!-- Debug panel -->
+      <div class="mt-2 flex items-center justify-between text-xs text-gray-11">
+        <span>API endpoint: <code class="text-xs">{{ $config.public.formChatApi || '/api/chat' }}</code></span>
+        <div
+          v-if="requestTime !== null"
+          class="flex items-center text-[11px]"
+        >
+          <Icon
+            class="sky-12 mr-1 size-3"
+            name="iconoir:timer"
+          />
+          <span class="mr-2">Antwortzeit: </span>
+          <span class="geist-regular mt-px leading-none tracking-tight">{{ requestTime }}ms</span>
+        </div>
+        <button class="ml-4 text-xs color-gray-11 hover:underline" @click="resetChat">
+          Chat zurücksetzen
+        </button>
+      </div>
     </div>
   </div>
 </template>

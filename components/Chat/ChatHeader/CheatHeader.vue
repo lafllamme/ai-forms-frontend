@@ -11,7 +11,7 @@
       <h2 class="font-prata text-xl color-sky-12 font-medium tracking-tight antialiased">
         Smart Form Assistant
       </h2>
-      <p class="color-gray-12 font-thin">
+      <p class="text-xs color-gray-12 font-thin">
         Intelligente Formular-Begleitung
       </p>
     </div>
