@@ -46,14 +46,14 @@ watch(sidebarOpen, (open) => {
       >
         <Icon
           v-if="showIconSide"
-          class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
+          class="size-6 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
           name="tabler:layout-sidebar-filled"
         />
 
         <Icon
           v-else
-          class="size-8 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
-          name="tabler:robot"
+          class="size-6 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
+          name="mdi:robot"
         />
       </button>
 

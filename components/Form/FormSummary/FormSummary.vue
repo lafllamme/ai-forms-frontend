@@ -5,6 +5,7 @@ import ToggleButton from '@/components/Buttons/ToggleButton/ToggleButton.vue'
 import CheatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 import { useStatus } from '@/composables/useStatus'
 import { useChatStore } from '@/stores/chat'
+import ProgressBar from '~/components/Form/ProgressBar/ProgressBar.vue'
 
 const summaryOpen = ref(true)
 const status = useStatus()
@@ -64,10 +65,10 @@ fetchStatus()
       <div
         v-if="summaryOpen"
         key="open"
-        class="relative h-full w-full flex flex-col justify-start border-l border-gray-2 bg-gray-6 p-6 color-sky-11"
+        class="relative h-full w-full flex flex-col justify-start border-l border-gray-2 bg-gray-6 p-6 color-sky-11 animate-fade-in"
         style="transition: background 0.3s;"
       >
-        <div class="mt-6 animate-fade-in">
+        <div class="mt-6">
           <CheatHeader />
         </div>
 
@@ -79,9 +80,10 @@ fetchStatus()
             {{ errorMsg }}
           </div>
           <template v-else-if="statusData">
-            <h3 class="mb-2 text-lg font-bold">
-              Formular-Status
+            <h3 class="geist-regular mb-2 text-lg color-pureBlack font-bold dark:color-pureWhite">
+              Übersicht des Formulars
             </h3>
+            <ProgressBar :percent="60" show-percent />
             <div class="text-xs leading-relaxed space-y-1">
               <div><b>Phase:</b> {{ statusData.phase }}</div>
               <div><b>Formular-ID:</b> {{ statusData.form_id }}</div>
