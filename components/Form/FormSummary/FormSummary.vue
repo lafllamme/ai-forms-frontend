@@ -200,9 +200,42 @@ watch(sessionId, (id) => {
                   </div>
                 </div>
               </div>
+              <!-- === ANALYTICS SECTION === -->
+              <div v-if="statusData?.analytics" class="mt-4 border-t border-gray-4 pt-3">
+                <div class="mb-1 flex items-center justify-start gap-1.5 text-sm font-semibold">
+                  <Icon
+                    class="size-5 color-sky-11"
+                    name="iconoir:multiple-pages"
+                  />
+                  <p class="font-manrope color-gray-12A font-light">
+                    Analytics
+                  </p>
+                </div>
+                <ul class="ml-1">
+                  <li>
+                    <b>Komplexität:</b> {{ statusData.analytics.form_complexity }}
+                  </li>
+                  <li>
+                    <b>Schwierigkeitsgrad:</b> {{ statusData.analytics.form_difficulty }}
+                  </li>
+                  <li>
+                    <b>LLM-Requests:</b> {{ statusData.analytics.llm_calls_count }}
+                  </li>
+                  <li>
+                    <b>Antwortzeit Ø:</b> {{ statusData.analytics.average_response_time }} ms
+                  </li>
+                  <li>
+                    <b>Nachrichten gesamt:</b> {{ statusData.analytics.messages_count }}
+                  </li>
+                  <li>
+                    <b>User Language:</b> {{ statusData.analytics.user_language }}
+                  </li>
+                </ul>
+              </div>
+              <!-- === END ANALYTICS SECTION === -->
               <div
                 v-if="lastRequestTime !== null"
-                class="font-geist flex justify-end gap-2 text-xs color-gray-11 font-light"
+                class="font-geist mt-3 flex justify-end gap-2 text-xs color-gray-11 font-light"
               >
                 <div>
                   <NumberTicker
