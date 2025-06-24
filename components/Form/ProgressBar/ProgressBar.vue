@@ -37,7 +37,7 @@ defineProps<{
   position: relative;
   overflow: hidden;
   /* Custom cubic-bezier for smooth width transition */
-  transition: width 0.9s cubic-bezier(0.33, 1, 0.68, 1);
+  transition: width 1.9s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .shimmer-anim {

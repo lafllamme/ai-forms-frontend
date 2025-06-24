@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import ToggleButton from '@/components/Buttons/ToggleButton/ToggleButton.vue'
 import CheatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 import { useStatus } from '@/composables/useStatus'
@@ -21,7 +21,27 @@ function toggleSummary() {
 const statusData = ref<any>(null)
 const isLoading = ref(false)
 const errorMsg = ref<string | null>(null)
-const lastRequestTime = ref<number | null>(null) // ← response time in ms
+const lastRequestTime = ref<number | null>(null)
+
+// --- PATCH statusData instead of replacing object
+function patchStatusData(newData: any) {
+  if (!statusData.value) {
+    statusData.value = { ...newData }
+    return
+  }
+  // Remove keys that no longer exist in new data
+  for (const key of Object.keys(statusData.value)) {
+    if (!(key in newData))
+      delete statusData.value[key]
+  }
+  // Patch in all new keys
+  for (const key of Object.keys(newData)) {
+    statusData.value[key] = newData[key]
+  }
+}
+
+// --- Never set statusData to empty/null after first load
+let hasLoadedOnce = false
 
 function fetchStatus() {
   isLoading.value = true
@@ -29,21 +49,26 @@ function fetchStatus() {
   getStatus(sessionId.value)
     .then((res) => {
       lastRequestTime.value = Math.round(performance.now() - start)
-      statusData.value = res
+      patchStatusData(res)
+      hasLoadedOnce = true
       errorMsg.value = null
       isLoading.value = false
       setTimeout(fetchStatus, 15000)
     })
     .catch((error) => {
       lastRequestTime.value = Math.round(performance.now() - start)
-      statusData.value = null
       errorMsg.value = 'Fehler beim Laden des Status'
       isLoading.value = false
+      // Do NOT set statusData to null/{}! Keeps the old data visible.
       setTimeout(fetchStatus, 15000)
     })
 }
 
-fetchStatus()
+// Initial fetch on mount AND whenever sessionId changes
+watch(sessionId, (id) => {
+  if (id)
+    fetchStatus()
+}, { immediate: true })
 </script>
 
 <template>
@@ -76,27 +101,29 @@ fetchStatus()
           <CheatHeader />
         </div>
         <div class="mt-4">
-          <div v-if="isLoading" class="text-gray-400 text-xs">
+          <!-- Only show loading if never loaded yet -->
+          <div v-if="isLoading && !hasLoadedOnce" class="text-gray-400 text-xs">
             Lade Status…
           </div>
-          <div v-else-if="errorMsg" class="text-red-400 text-xs">
+          <div v-else-if="errorMsg && !hasLoadedOnce" class="text-red-400 text-xs">
             {{ errorMsg }}
           </div>
-          <template v-else-if="statusData">
+          <!-- Always keep the panel content mounted -->
+          <div v-else>
             <h3 class="geist-regular mb-2 text-lg color-pureBlack font-bold dark:color-pureWhite">
               Übersicht des Formulars
             </h3>
             <ProgressBar
-              :percent="statusData.progress?.percentage_complete ?? 0"
+              :percent="statusData?.progress?.percentage_complete ?? 0"
               show-percent
             />
             <div class="mt-2 text-xs leading-relaxed space-y-1">
-              <div><b>Phase:</b> {{ statusData.phase }}</div>
-              <div><b>Formular-ID:</b> {{ statusData.form_id }}</div>
-              <div v-if="statusData.receiver">
+              <div><b>Phase:</b> {{ statusData?.phase }}</div>
+              <div><b>Formular-ID:</b> {{ statusData?.form_id }}</div>
+              <div v-if="statusData?.receiver">
                 <b>Empfänger:</b> {{ statusData.receiver }}
               </div>
-              <div v-if="statusData.answers && Object.keys(statusData.answers).length">
+              <div v-if="statusData?.answers && Object.keys(statusData.answers).length">
                 <b>Answers:</b>
                 <ul class="ml-2 list-disc">
                   <li v-for="(val, key) in statusData.answers" :key="key">
@@ -104,7 +131,7 @@ fetchStatus()
                   </li>
                 </ul>
               </div>
-              <div v-if="statusData.progress">
+              <div v-if="statusData?.progress">
                 <div class="mt-2">
                   <b>Fortschritt:</b>
                   <div class="ml-2">
@@ -152,9 +179,6 @@ fetchStatus()
                 </div>
               </div>
             </div>
-          </template>
-          <div v-else class="text-gray-400 text-xs">
-            Kein Status vorhanden.
           </div>
         </div>
       </div>
