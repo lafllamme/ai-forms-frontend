@@ -11,7 +11,6 @@ const summaryOpen = ref(true)
 const status = useStatus()
 const chatStore = useChatStore()
 const { sessionId } = storeToRefs(chatStore)
-
 const { getStatus } = status
 
 function toggleSummary() {
@@ -26,7 +25,7 @@ function fetchStatus() {
   isLoading.value = true
   getStatus(sessionId.value)
     .then((res) => {
-      statusData.value = res // No .data!
+      statusData.value = res // All fields included
       errorMsg.value = null
       isLoading.value = false
       setTimeout(fetchStatus, 15000)
@@ -71,7 +70,6 @@ fetchStatus()
         <div class="mt-6">
           <CheatHeader />
         </div>
-
         <div class="mt-4">
           <div v-if="isLoading" class="text-gray-400 text-xs">
             Lade Status…
@@ -83,17 +81,59 @@ fetchStatus()
             <h3 class="geist-regular mb-2 text-lg color-pureBlack font-bold dark:color-pureWhite">
               Übersicht des Formulars
             </h3>
-            <ProgressBar :percent="60" show-percent />
-            <div class="text-xs leading-relaxed space-y-1">
+            <ProgressBar
+              :percent="statusData.progress?.percentage_complete ?? 0"
+              show-percent
+            />
+            <div class="mt-2 text-xs leading-relaxed space-y-1">
               <div><b>Phase:</b> {{ statusData.phase }}</div>
               <div><b>Formular-ID:</b> {{ statusData.form_id }}</div>
-              <div>
+              <div v-if="statusData.receiver">
+                <b>Empfänger:</b> {{ statusData.receiver }}
+              </div>
+              <div v-if="statusData.answers && Object.keys(statusData.answers).length">
                 <b>Answers:</b>
                 <ul class="ml-2 list-disc">
                   <li v-for="(val, key) in statusData.answers" :key="key">
                     <b>{{ key }}:</b> {{ val }}
                   </li>
                 </ul>
+              </div>
+              <div v-if="statusData.progress">
+                <div class="mt-2">
+                  <b>Fortschritt:</b>
+                  <div class="ml-2">
+                    <div>
+                      <b>Beantwortete Felder:</b> {{ statusData.progress.answered_fields }} /
+                      {{ statusData.progress.total_fields }}
+                    </div>
+                    <div>
+                      <b>Aktueller Schritt:</b> {{ statusData.progress.current_step }} /
+                      {{ statusData.progress.total_steps }}
+                    </div>
+                    <div v-if="statusData.progress.current_field">
+                      <b>Aktuelles Feld:</b>
+                      <span>{{ statusData.progress.current_field.label }}</span>
+                      <span v-if="statusData.progress.current_field.required" class="text-red-500 ml-1">*</span>
+                      <span class="ml-1 text-gray-11">({{ statusData.progress.current_field.type }})</span>
+                    </div>
+                    <div v-if="statusData.progress.missing_fields && statusData.progress.missing_fields.length">
+                      <b>Fehlende Felder:</b>
+                      <span>{{ statusData.progress.missing_fields.join(', ') }}</span>
+                    </div>
+                    <div v-if="statusData.progress.phase_progress" class="mt-1">
+                      <b>Phasen-Fortschritt:</b>
+                      <ul class="ml-2 list-disc">
+                        <li
+                          v-for="(val, key) in statusData.progress.phase_progress"
+                          :key="key"
+                        >
+                          {{ key }}: {{ val }}%
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </template>
