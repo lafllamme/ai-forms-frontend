@@ -19,7 +19,7 @@ defineProps<{
         {{ Math.round(percent) }}%
       </span>
     </div>
-    <div class="h-2 w-full flex items-center overflow-hidden rounded-full bg-gray-4">
+    <div class="h-2 w-full flex items-center overflow-hidden rounded-full bg-gray-10">
       <div
         :style="{ width: `${Math.min(Math.max(percent, 0), 100)}%` }"
         class="progress-bar-shimmer relative h-3 rounded-full bg-sky-1"
@@ -37,14 +37,14 @@ defineProps<{
   position: relative;
   overflow: hidden;
   /* Custom cubic-bezier for smooth width transition */
-  transition: width 1.9s cubic-bezier(0.33, 1, 0.68, 1);
+  transition: width 2.2s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .shimmer-anim {
   /* For light mode: a gentle dark shimmer */
   background: linear-gradient(100deg, transparent 60%, rgba(24, 24, 28, 0.18) 75%, transparent 90%);
   opacity: 0.5;
-  animation: shimmer-glow 1.2s linear infinite;
+  animation: shimmer-glow 2.2s linear infinite;
 }
 
 .dark .shimmer-anim {

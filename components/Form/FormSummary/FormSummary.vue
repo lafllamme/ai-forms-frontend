@@ -22,26 +22,55 @@ const statusData = ref<any>(null)
 const isLoading = ref(false)
 const errorMsg = ref<string | null>(null)
 const lastRequestTime = ref<number | null>(null)
+const lastPercent = ref(0)
+const isSessionFinished = ref(false)
+let hasLoadedOnce = false
 
-// --- PATCH statusData instead of replacing object
-function patchStatusData(newData: any) {
-  if (!statusData.value) {
-    statusData.value = { ...newData }
-    return
-  }
-  // Remove keys that no longer exist in new data
+function patchStatusWithProgressClamp(newData: any) {
+  if (!statusData.value)
+    statusData.value = {}
+
+  // Always update all other fields
   for (const key of Object.keys(statusData.value)) {
     if (!(key in newData))
       delete statusData.value[key]
   }
-  // Patch in all new keys
   for (const key of Object.keys(newData)) {
     statusData.value[key] = newData[key]
   }
-}
 
-// --- Never set statusData to empty/null after first load
-let hasLoadedOnce = false
+  // Clamp percent
+  const incomingPercent = newData?.progress?.percentage_complete ?? 0
+
+  // Check for session finished
+  if (
+  // If phase is submit, or any logic you want to treat as "finished"
+    (newData.phase === 'submit' || incomingPercent >= 100)
+    && !isSessionFinished.value
+  ) {
+    lastPercent.value = 100
+    isSessionFinished.value = true
+    // Optionally override percent in UI
+    if (!statusData.value.progress)
+      statusData.value.progress = {}
+    statusData.value.progress.percentage_complete = 100
+    return
+  }
+
+  // Only allow percent to increase, not decrease
+  if (incomingPercent >= lastPercent.value) {
+    lastPercent.value = incomingPercent
+    if (!statusData.value.progress)
+      statusData.value.progress = {}
+    statusData.value.progress.percentage_complete = incomingPercent
+  }
+  else {
+    // Keep showing the highest percent
+    if (!statusData.value.progress)
+      statusData.value.progress = {}
+    statusData.value.progress.percentage_complete = lastPercent.value
+  }
+}
 
 function fetchStatus() {
   isLoading.value = true
@@ -49,7 +78,7 @@ function fetchStatus() {
   getStatus(sessionId.value)
     .then((res) => {
       lastRequestTime.value = Math.round(performance.now() - start)
-      patchStatusData(res)
+      patchStatusWithProgressClamp(res)
       hasLoadedOnce = true
       errorMsg.value = null
       isLoading.value = false
@@ -59,12 +88,10 @@ function fetchStatus() {
       lastRequestTime.value = Math.round(performance.now() - start)
       errorMsg.value = 'Fehler beim Laden des Status'
       isLoading.value = false
-      // Do NOT set statusData to null/{}! Keeps the old data visible.
       setTimeout(fetchStatus, 15000)
     })
 }
 
-// Initial fetch on mount AND whenever sessionId changes
 watch(sessionId, (id) => {
   if (id)
     fetchStatus()
@@ -101,23 +128,29 @@ watch(sessionId, (id) => {
           <CheatHeader />
         </div>
         <div class="mt-4">
-          <!-- Only show loading if never loaded yet -->
           <div v-if="isLoading && !hasLoadedOnce" class="text-gray-400 text-xs">
             Lade Status…
           </div>
           <div v-else-if="errorMsg && !hasLoadedOnce" class="text-red-400 text-xs">
             {{ errorMsg }}
           </div>
-          <!-- Always keep the panel content mounted -->
           <div v-else>
-            <h3 class="geist-regular mb-2 text-lg color-pureBlack font-bold dark:color-pureWhite">
-              Übersicht des Formulars
-            </h3>
+            <div class="mb-4 flex items-center justify-start gap-2">
+              <Icon class="size-5 color-sky-12" name="iconoir:attachment" />
+              <h3 class="font-baskerville text-lg color-pureBlack font-bold leading-none tracking-tight dark:color-pureWhite">
+                Zusammenfassung
+              </h3>
+            </div>
             <ProgressBar
               :percent="statusData?.progress?.percentage_complete ?? 0"
               show-percent
             />
-            <div class="mt-2 text-xs leading-relaxed space-y-1">
+            <template v-if="isSessionFinished">
+              <div class="mt-8 text-center text-lg color-green-7 font-bold dark:color-green-4">
+                ✅ Vielen Dank! Das Formular wurde erfolgreich abgeschlossen.
+              </div>
+            </template>
+            <div v-else class="mt-2 text-xs leading-relaxed space-y-1">
               <div><b>Phase:</b> {{ statusData?.phase }}</div>
               <div><b>Formular-ID:</b> {{ statusData?.form_id }}</div>
               <div v-if="statusData?.receiver">
