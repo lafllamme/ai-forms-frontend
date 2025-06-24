@@ -6,6 +6,7 @@ import CheatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 import { useStatus } from '@/composables/useStatus'
 import { useChatStore } from '@/stores/chat'
 import ProgressBar from '~/components/Form/ProgressBar/ProgressBar.vue'
+import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
 
 const summaryOpen = ref(true)
 const status = useStatus()
@@ -20,17 +21,21 @@ function toggleSummary() {
 const statusData = ref<any>(null)
 const isLoading = ref(false)
 const errorMsg = ref<string | null>(null)
+const lastRequestTime = ref<number | null>(null) // ← response time in ms
 
 function fetchStatus() {
   isLoading.value = true
+  const start = performance.now()
   getStatus(sessionId.value)
     .then((res) => {
-      statusData.value = res // All fields included
+      lastRequestTime.value = Math.round(performance.now() - start)
+      statusData.value = res
       errorMsg.value = null
       isLoading.value = false
       setTimeout(fetchStatus, 15000)
     })
     .catch((error) => {
+      lastRequestTime.value = Math.round(performance.now() - start)
       statusData.value = null
       errorMsg.value = 'Fehler beim Laden des Status'
       isLoading.value = false
@@ -133,6 +138,17 @@ fetchStatus()
                       </ul>
                     </div>
                   </div>
+                </div>
+              </div>
+              <div
+                v-if="lastRequestTime !== null"
+                class="font-geist flex justify-end gap-2 text-xs color-gray-11 font-light"
+              >
+                <div>
+                  <NumberTicker
+                    :value="lastRequestTime"
+                  />
+                  <span>ms</span>
                 </div>
               </div>
             </div>

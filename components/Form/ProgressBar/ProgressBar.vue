@@ -21,11 +21,9 @@ defineProps<{
     </div>
     <div class="h-2 w-full flex items-center overflow-hidden rounded-full bg-gray-4">
       <div
-
         :style="{ width: `${Math.min(Math.max(percent, 0), 100)}%` }"
-        class="progress-bar-shimmer relative h-3 rounded-full bg-sky-1 transition-all duration-500"
+        class="progress-bar-shimmer relative h-3 rounded-full bg-sky-1"
       >
-        <!-- shimmer overlay is absolute, covers filled bar only -->
         <span
           class="shimmer-anim pointer-events-none absolute left-0 top-0 block h-full w-full"
         />
@@ -38,6 +36,8 @@ defineProps<{
 .progress-bar-shimmer {
   position: relative;
   overflow: hidden;
+  /* Custom cubic-bezier for smooth width transition */
+  transition: width 0.9s cubic-bezier(0.33, 1, 0.68, 1);
 }
 
 .shimmer-anim {
@@ -47,12 +47,9 @@ defineProps<{
   animation: shimmer-glow 1.2s linear infinite;
 }
 
-/* For dark mode: a gentle white shimmer */
-.dark {
-  .shimmer-anim {
-    background: linear-gradient(100deg, transparent 60%, rgba(255, 255, 255, 0.24) 75%, transparent 90%);
-    opacity: 0.6;
-  }
+.dark .shimmer-anim {
+  background: linear-gradient(100deg, transparent 60%, rgba(255, 255, 255, 0.24) 75%, transparent 90%);
+  opacity: 0.6;
 }
 
 @keyframes shimmer-glow {

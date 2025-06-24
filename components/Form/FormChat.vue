@@ -4,7 +4,8 @@ import { storeToRefs } from 'pinia'
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useChat } from '@/composables/useChat'
 import { useChatStore } from '@/stores/chat'
-import { generateSessionId } from '@/utils/uuid' // <--- utility as in previous messages
+import { generateSessionId } from '@/utils/uuid'
+import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue' // <--- utility as in previous messages
 
 const chatStore = useChatStore()
 const { sessionId } = storeToRefs(chatStore)
@@ -211,7 +212,10 @@ onMounted(() => {
             name="iconoir:timer"
           />
           <span class="mr-2">Antwortzeit: </span>
-          <span class="geist-regular mt-px leading-none tracking-tight">{{ requestTime }}ms</span>
+          <span class="geist-regular mt-px leading-none tracking-tight">
+            <NumberTicker :value="requestTime" />
+            <span>ms</span>
+          </span>
         </div>
         <button class="ml-4 text-xs color-gray-11 hover:underline" @click="resetChat">
           Chat zurücksetzen
