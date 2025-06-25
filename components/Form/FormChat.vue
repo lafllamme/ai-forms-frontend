@@ -164,7 +164,7 @@ onMounted(() => {
         @click="focusTextarea"
         @submit.prevent="sendMessage"
       >
-        <div class="max-w-[40rem] w-full flex flex-col justify-start gap-4 border rounded-[28px] bg-gray-2 p-5">
+        <div class="max-w-[45rem] w-full flex flex-col justify-start gap-4 border rounded-[28px] bg-gray-2 p-5">
           <textarea
             ref="textArea"
             v-model="userInput"
