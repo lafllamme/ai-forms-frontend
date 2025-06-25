@@ -13,7 +13,7 @@ function handleHover() {
     @mouseenter="handleHover"
     @mouseleave="handleHover"
   >
-    <div class="group size-12 flex items-center justify-center rounded-full bg-sky-1 hover:bg-sky-3">
+    <div class="group size-12 flex items-center justify-center rounded-full bg-indigo-5 hover:bg-sky-3">
       <Icon v-if="hasHovered" class="size-8 color-sky-12" name="mdi:robot-excited" />
       <Icon v-else class="size-8 color-sky-12" name="mdi:robot-happy" />
     </div>

@@ -38,7 +38,7 @@ watch(sidebarOpen, (open) => {
     >
       <!-- Logo + toggle -->
       <button
-        class="group hover:bg-color-gray-12 mb-6 mt-2 h-12 w-12 flex items-center justify-center rounded-full bg-sky-4 transition transition-colors duration-300 ease-out hover:bg-sky-6"
+        class="group hover:bg-color-gray-12 mb-6 mt-2 h-12 w-12 flex items-center justify-center border border-gray-12 rounded-full border-solid bg-sky-1 transition transition-colors duration-300 ease-out dark:border-none hover:bg-sky-6"
         title="Toggle sidebar"
         @click="toggleSidebar"
         @mouseenter="handleHover"
@@ -52,7 +52,7 @@ watch(sidebarOpen, (open) => {
 
         <Icon
           v-else
-          class="size-6 color-sky-12 transition-colors duration-300 ease-out group-hover:color-gray-12"
+          class="size-8 color-sky-11 transition-colors duration-300 ease-out group-hover:color-gray-12"
           name="mdi:robot"
         />
       </button>

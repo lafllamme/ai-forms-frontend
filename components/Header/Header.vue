@@ -72,7 +72,7 @@ onBeforeUnmount(() => {
     ref="headerRef"
     :class="useClsx(
       'liquid-glass-header group',
-      'fixed left-1/2 top-6 z-50 max-w-2xl min-w-[340px] md:min-w-[420px] w-[30vw]',
+      'fixed left-1/2 top-3 z-50 max-w-2xl min-w-[340px] md:min-w-[420px] w-[30vw]',
       'flex items-center justify-between overflow-hidden border rounded-full p-2 pl-6 pr-4 shadow-xl outline-none transition-all duration-500 -translate-x-1/2 hover:shadow-2xl',
       'backdrop-blur-[16px] bg-[rgba(255,255,255,0.25)] dark:bg-[rgba(32,34,50,0.14)]',
       'border-[rgba(0,0,0,0.08)] dark:border-[rgba(255,255,255,0.13)]',
