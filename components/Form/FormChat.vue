@@ -5,7 +5,9 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useChat } from '@/composables/useChat'
 import { useChatStore } from '@/stores/chat'
 import { generateSessionId } from '@/utils/uuid'
-import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue' // <--- utility as in previous messages
+import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
+import RadiantText from '~/components/Text/RadiantText/RadiantText.vue'
+// <--- utility as in previous messages
 
 const chatStore = useChatStore()
 const { sessionId } = storeToRefs(chatStore)
@@ -146,8 +148,12 @@ onMounted(() => {
           </div>
         </template>
         <!-- Loading spinner -->
-        <div v-if="isLoading" class="mt-2 flex justify-start animate-pulse">
-          <span class="geist-regular ml-2 text-xs color-gray-10">Formular-Assistent denkt ...</span>
+        <div v-if="isLoading" class="mt-2 flex justify-start">
+          <RadiantText
+            class="font-manrope inline-flex items-center justify-start py-1 transition-all ease-out hover:text-gray-6 hover:duration-300"
+          >
+            <span class="text-sm font-bold"> Form Assistant  überlegt ...</span>
+          </RadiantText>
         </div>
         <!-- Always keep space at the bottom for the input area -->
         <div class="pb-8" />

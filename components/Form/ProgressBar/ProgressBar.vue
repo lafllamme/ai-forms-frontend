@@ -1,4 +1,6 @@
 <script lang="ts" setup>
+import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
+
 defineProps<{
   percent: number
   label?: string
@@ -16,7 +18,9 @@ defineProps<{
         v-if="showPercent !== false"
         class="text-black dark:text-white geist-regular text-base color-pureBlack font-bold tracking-wide dark:color-pureWhite"
       >
-        {{ Math.round(percent) }}%
+        <NumberTicker
+          :value=" Math.round(percent)"
+        />%
       </span>
     </div>
     <div class="h-2.5 w-full flex items-center overflow-hidden rounded-full bg-gray-10">

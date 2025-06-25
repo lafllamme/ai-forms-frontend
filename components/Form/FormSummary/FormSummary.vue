@@ -204,15 +204,15 @@ watch(sessionId, (id) => {
               <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
               <p>Deine bisherigen Eingaben</p>
             </div>
-            <TransitionGroup class="flex flex-col gap-2" name="chip-fade-stagger" tag="div">
+            <TransitionGroup v-if="true" class="flex flex-col gap-2" name="chip-fade-stagger" tag="div">
               <div
                 v-for="(val, key, idx) in statusData.answers"
                 :key="key"
               >
                 <div
                   v-if="idx !== 0"
-                  :style="`transition-delay: ${idx * 70}ms`"
-                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 dark:bg-gray-7"
+                  :style="`transition-delay: ${idx * 90}ms`"
+                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 transition-all dark:bg-gray-7 hover:bg-indigo-4 dark:hover:bg-gray-5"
                 >
                   <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
                     {{ key }}
@@ -310,9 +310,9 @@ watch(sessionId, (id) => {
 .section-fade-slide-enter-active,
 .section-fade-slide-leave-active {
   transition:
-    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
-    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.9s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.9s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .section-fade-slide-enter-from,
@@ -333,8 +333,8 @@ watch(sessionId, (id) => {
 .swish-field-enter-active,
 .swish-field-leave-active {
   transition:
-    opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
-    transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
   will-change: transform, opacity;
   position: relative;
   z-index: 0;
