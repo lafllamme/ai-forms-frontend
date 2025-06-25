@@ -146,8 +146,8 @@ watch(sessionId, (id) => {
               show-percent
             />
             <template v-if="isSessionFinished">
-              <div class="mt-8 text-center text-lg color-green-7 font-bold dark:color-green-4">
-                ✅ Vielen Dank! Das Formular wurde erfolgreich abgeschlossen.
+              <div class="crimson-text-regular mt-8 text-center text-2xl color-sky-12 font-light tracking-normal">
+                Vielen Dank! Das Formular wurde erfolgreich abgeschlossen.
               </div>
             </template>
             <div v-else class="mt-2 text-xs leading-relaxed space-y-1">
