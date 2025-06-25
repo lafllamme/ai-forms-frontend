@@ -152,7 +152,7 @@ onMounted(() => {
           <RadiantText
             class="font-manrope inline-flex items-center justify-start py-1 transition-all ease-out hover:text-gray-6 hover:duration-300"
           >
-            <span class="text-sm font-bold"> Form Assistant  überlegt ...</span>
+            <span class="text-sm font-bold"> Form Assistant denkt nach ...</span>
           </RadiantText>
         </div>
         <!-- Always keep space at the bottom for the input area -->
