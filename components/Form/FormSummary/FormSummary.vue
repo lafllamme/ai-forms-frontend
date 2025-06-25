@@ -52,20 +52,28 @@ function patchStatusWithProgressClamp(newData: any) {
   }
 }
 
+// genrate a timeout randomly between 8 and 12 seconds
+function getRandomTimeout() {
+  return Math.floor(Math.random() * (12000 - 8000 + 1)) + 8000
+}
+
 function fetchStatus() {
   isLoading.value = true
+  const timeout = getRandomTimeout()
+  consola.debug('[FormSummary] Fetching status with timeout:', timeout)
+
   getStatus(sessionId.value)
     .then((res) => {
       patchStatusWithProgressClamp(res)
       hasLoadedOnce = true
       errorMsg.value = null
       isLoading.value = false
-      setTimeout(fetchStatus, 15000)
+      setTimeout(fetchStatus, timeout)
     })
     .catch(() => {
       errorMsg.value = 'Fehler beim Laden des Status'
       isLoading.value = false
-      setTimeout(fetchStatus, 15000)
+      setTimeout(fetchStatus, timeout)
     })
 }
 
@@ -95,109 +103,136 @@ watch(sessionId, (id) => {
         class="relative h-full w-full flex flex-col border-gray-2 bg-gray-7 px-0 pt-0 dark:bg-gray-1"
         style="transition: background 0.3s;"
       >
-        <!-- Smart Assistant Card -->
-        <div
-          class="border-b border-gray-2 bg-gray-7 px-7 pt-4 dark:bg-gray-1"
-        >
-          <div>
-            <CheatHeader />
-          </div>
-          <div class="pb-2">
-            <ProgressBar
-              :percent="statusData?.progress?.percentage_complete ?? 0"
-              class="mb-1"
-              show-percent
-            />
-            <div class="font-geist mt-2 flex items-center text-xs color-gray-11">
-              <div class="flex justify-start gap-1">
-                <p>Phase</p>
-                <p class="color-pureBlack uppercase dark:color-pureWhite">
-                  {{ statusData?.phase }}
-                </p>
-              </div>
-              <div class="px-3">
-                •
-              </div>
-              <div v-if="statusData?.progress">
-                <p>
-                  Schritt
-                  <span>
-                    {{ statusData.progress.current_step }}
-                  </span>/<span>
-                    {{ statusData.progress.total_steps }}
-                  </span>
-                </p>
+        <!-- Header -->
+        <Transition appear name="section-fade-slide">
+          <div
+            key="header"
+            class="border-b border-gray-2 bg-gray-7 px-7 pt-4 dark:bg-gray-1"
+          >
+            <div>
+              <CheatHeader />
+            </div>
+            <div class="pb-2">
+              <ProgressBar
+                :percent="statusData?.progress?.percentage_complete ?? 0"
+                class="mb-1"
+                show-percent
+              />
+              <div class="font-geist mt-2 flex items-center text-xs color-gray-11">
+                <div class="flex justify-start gap-1">
+                  <p>Phase</p>
+                  <p class="color-pureBlack uppercase dark:color-pureWhite">
+                    {{ statusData?.phase }}
+                  </p>
+                </div>
+                <div class="px-3">
+                  •
+                </div>
+                <div v-if="statusData?.progress">
+                  <p>
+                    Schritt
+                    <span>
+                      {{ statusData.progress.current_step }}
+                    </span>/<span>
+                      {{ statusData.progress.total_steps }}
+                    </span>
+                  </p>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Transition>
 
         <!-- Stats Row -->
-        <div class="my-4 flex items-center justify-between gap-2">
-          <div class="flex flex-1 flex-col items-center">
-            <NumberTicker
-              :value="statusData?.analytics?.llm_calls_count ?? 0"
-              class="jetbrains-mono-regular text-xl color-gray-12 font-bold"
-            />
-            <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Requests</span>
-          </div>
-          <div class="flex flex-1 flex-col items-center">
-            <div class="jetbrains-mono-regular text-xl color-gray-12 font-bold">
+        <Transition appear name="section-fade-slide">
+          <div key="stats" class="my-4 flex items-center justify-between gap-2">
+            <div class="flex flex-1 flex-col items-center">
               <NumberTicker
-                :value="statusData?.analytics?.form_complexity ?? 0 "
+                :value="statusData?.analytics?.llm_calls_count ?? 0"
+                class="jetbrains-mono-regular text-xl color-gray-12 font-bold"
               />
+              <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Requests</span>
             </div>
-            <span
-              class="font-dm-mono mt-0.5 text-xs color-gray-11 capitalize"
-            >{{ statusData?.analytics?.form_difficulty ?? 'Easy' }}</span>
+            <div class="flex flex-1 flex-col items-center">
+              <div class="jetbrains-mono-regular text-xl color-gray-12 font-bold">
+                <NumberTicker
+                  :value="statusData?.analytics?.form_complexity ?? 0 "
+                />
+              </div>
+              <span
+                class="font-dm-mono mt-0.5 text-xs color-gray-11 capitalize"
+              >{{ statusData?.analytics?.form_difficulty ?? 'Easy' }}</span>
+            </div>
+            <div class="flex flex-1 flex-col items-center">
+              <span class="jetbrains-mono-regular text-xl color-gray-12 font-bold">{{
+                statusData?.progress?.answered_fields ?? 0
+              }}</span>
+              <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Felder</span>
+            </div>
           </div>
-          <div class="flex flex-1 flex-col items-center">
-            <span class="jetbrains-mono-regular text-xl color-gray-12 font-bold">{{
-              statusData?.progress?.answered_fields ?? 0
-            }}</span>
-            <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Felder</span>
-          </div>
-        </div>
+        </Transition>
 
-        <hr class="mx-6 my-3 border-gray-9">
-        <!-- Formular Meta -->
-        <div class="px-6">
-          <div class="font-geist b-1 text-sm color-gray-11 font-light font-medium tracking-tight">
-            Formular
-          </div>
-          <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
-            {{ statusData?.receiver }}
-          </div>
-          <div class="font-dm-mono mb-2 text-sm color-gray-9">
-            {{ statusData?.form_id }}
-          </div>
-          <!-- Neue Zusammenfassung -->
-          <!--          <div v-if="statusData?.answers && Object.keys(statusData.answers).length" class="mt-4 pb-6">
-                      <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-12 font-light">
-                        <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
-                        <p>Deine bisherigen Eingaben</p>
-                      </div>
-                      <div class="flex flex-col gap-2">
-                        <div
-                          v-for="(val, key) in statusData.answers"
-                          :key="key"
-                          class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 dark:bg-gray-7"
-                        >
-                          <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
-                            {{
-                              key
-                            }}
-                          </p>
-                          <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
-                            {{ val }}
-                          </p>
-                        </div>
-                      </div>
-                    </div> -->
-        </div>
+        <Transition appear name="section-fade-slide">
+          <hr key="divider" class="mx-6 my-3 border-gray-9">
+        </Transition>
 
-        <!-- Aktuell -->
-        <div v-if="statusData?.progress?.current_field" class="mb-4 bg-indigo-12">
+        <!-- Formular Meta (now above "Aktuelles Feld") -->
+        <Transition appear name="section-fade-slide">
+          <div key="meta" class="px-6">
+            <div
+              v-if="statusData?.receiver"
+              class="font-geist b-1 text-xs color-gray-11 font-light font-medium tracking-tight uppercase"
+            >
+              Formular
+            </div>
+            <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
+              {{ statusData?.receiver }}
+            </div>
+            <div class="font-dm-mono mb-2 text-sm color-gray-9 uppercase">
+              {{ statusData?.form_id }}
+            </div>
+          </div>
+        </Transition>
+
+        <!-- Zusammenfassung: Animated, Staggered Chips -->
+        <Transition appear name="section-fade-slide">
+          <div
+            v-if="statusData?.phase === 'done' && statusData?.answers && Object.keys(statusData.answers).length"
+            class="mt-4 px-4 pb-6"
+          >
+            <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-12 font-light">
+              <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
+              <p>Deine bisherigen Eingaben</p>
+            </div>
+            <TransitionGroup class="flex flex-col gap-2" name="chip-fade-stagger" tag="div">
+              <div
+                v-for="(val, key, idx) in statusData.answers"
+                :key="key"
+              >
+                <div
+                  v-if="idx !== 0"
+                  :style="`transition-delay: ${idx * 70}ms`"
+                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 dark:bg-gray-7"
+                >
+                  <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
+                    {{ key }}
+                  </p>
+                  <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
+                    {{ val }}
+                  </p>
+                </div>
+              </div>
+            </TransitionGroup>
+          </div>
+        </Transition>
+
+        <!-- Aktuelles Feld with swish/slide animation -->
+        <div
+          v-if="statusData?.progress?.current_field"
+          :key="statusData.progress.current_field.label"
+          class="mb-4 bg-indigo-12"
+          style="min-height: 130px;"
+        >
           <div
             class="font-geist mb-2 flex items-center justify-start gap-2 px-6 pb-1 pt-5 text-base color-sky-1 font-bold leading-none tracking-tight uppercase"
           >
@@ -207,39 +242,42 @@ watch(sessionId, (id) => {
             </h4>
           </div>
           <div class="px-6 py-5 pt-0">
-            <div
-              class="flex flex-col gap-1 rounded-xl bg-gray-7 px-5 py-4 dark:bg-gray-1"
+            <Transition
+              appear
+              mode="out-in"
+              name="swish-field"
             >
-              <div class="text-lg color-pureBlack font-bold dark:color-pureWhite">
-                <div class="geist-regular flex items-center justify-start gap-2 font-bold tracking-wide">
-                  <p>{{ statusData.progress.current_field.label }}</p>
-                  <div
-                    v-if="statusData.progress.current_field.required"
-                  >
-                    *
-                  </div>
-                  <div
-                    class="jetbrains-mono-regular ml-1 flex justify-end text-xs color-gray-11 font-light capitalize"
-                  >
-                    <p>
-                      ({{
-                        statusData.progress.current_field.type
-                      }})
-                    </p>
+              <div
+                class="flex flex-col gap-1 rounded-xl bg-gray-7 px-5 py-4 dark:bg-gray-1"
+              >
+                <div class="text-lg color-pureBlack font-bold dark:color-pureWhite">
+                  <div class="geist-regular flex items-center justify-start gap-2 font-bold tracking-wide">
+                    <p>{{ statusData.progress.current_field.label }}</p>
+                    <div
+                      v-if="statusData.progress.current_field.required"
+                    >
+                      *
+                    </div>
+                    <div
+                      class="jetbrains-mono-regular ml-1 flex justify-end text-xs color-gray-11 font-light capitalize"
+                    >
+                      <p>
+                        ({{ statusData.progress.current_field.type }})
+                      </p>
+                    </div>
                   </div>
                 </div>
+                <span class="font-manrope text-sm color-sky-11 font-medium">In Bearbeitung</span>
               </div>
-              <span class="font-manrope text-sm color-sky-11 font-medium">In Bearbeitung</span>
-            </div>
+            </Transition>
           </div>
         </div>
 
-        <!--   Ausstehend     -->
-        <div class="overflow-y-auto">
-          <!-- Ausstehend -->
-          <div v-if="statusData?.progress?.missing_fields?.length" class="mb-4 px-6">
+        <!-- Ausstehend: staggered, smooth, animated chips -->
+        <Transition appear name="section-fade-slide">
+          <div v-if="statusData?.progress?.missing_fields?.length" key="missing-fields" class="mb-4 px-6">
             <div
-              class="font-geist mb-2 flex items-center justify-between gap-2 text-base color-gray-12 font-bold font-bold tracking-wide uppercase"
+              class="font-geist mb-2 flex items-center justify-between gap-2 text-base color-gray-12 font-bold tracking-wide uppercase"
             >
               Ausstehende Felder
               <div
@@ -248,22 +286,106 @@ watch(sessionId, (id) => {
                 <NumberTicker :value="statusData.progress.missing_fields.length" />
               </div>
             </div>
-            <div class="grid grid-cols-2 gap-2">
-              <div
-                v-for="field in statusData.progress.missing_fields" :key="field"
-                class="font-dm-mono flex items-center justify-start rounded-md bg-gray-1 px-3 py-2 text-sm color-gray-12 font-medium dark:bg-gray-7"
-              >
-                {{ field }}
+            <TransitionGroup name="list-fade-stagger" tag="div">
+              <div class="grid grid-cols-2 gap-2">
+                <div
+                  v-for="(field, idx) in statusData.progress.missing_fields"
+                  :key="field"
+                  :style="`transition-delay: ${idx * 60}ms`"
+                  class="font-dm-mono flex items-center justify-start rounded-md bg-gray-1 px-3 py-2 text-sm color-gray-12 font-medium dark:bg-gray-7"
+                >
+                  {{ field }}
+                </div>
               </div>
-            </div>
+            </TransitionGroup>
           </div>
-        </div>
+        </Transition>
       </div>
     </Transition>
   </div>
 </template>
 
 <style scoped>
+/* Section fade/slide/blur/scale */
+.section-fade-slide-enter-active,
+.section-fade-slide-leave-active {
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.section-fade-slide-enter-from,
+.section-fade-slide-leave-to {
+  opacity: 0;
+  transform: translateY(18px) scale(0.98);
+  filter: blur(2px);
+}
+
+.section-fade-slide-enter-to,
+.section-fade-slide-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
+}
+
+/* Swish/slide: right to center on enter, center to left on leave for current field */
+.swish-field-enter-active,
+.swish-field-leave-active {
+  transition:
+    opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform, opacity;
+  position: relative;
+  z-index: 0;
+}
+
+.swish-field-enter-from {
+  opacity: 0;
+  transform: translateX(90px) scale(0.98);
+}
+
+.swish-field-enter-to {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.swish-field-leave-from {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+}
+
+.swish-field-leave-to {
+  opacity: 0;
+  transform: translateX(-90px) scale(0.98);
+}
+
+/* Staggered list for missing fields */
+.list-fade-stagger-enter-active {
+  transition:
+    opacity 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.list-fade-stagger-leave-active {
+  transition:
+    opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.list-fade-stagger-enter-from,
+.list-fade-stagger-leave-to {
+  opacity: 0;
+  transform: translateY(26px) scale(0.95);
+}
+
+.list-fade-stagger-enter-to,
+.list-fade-stagger-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* Keep your existing slide-panel styles for side opening */
 .slide-panel-enter-from,
 .slide-panel-leave-to {
   opacity: 0;
@@ -281,5 +403,30 @@ watch(sessionId, (id) => {
   transition:
     opacity 0.3s cubic-bezier(0.55, 0, 0.1, 1),
     transform 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* Staggered chip animation for Zusammenfassung */
+.chip-fade-stagger-enter-active {
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chip-fade-stagger-leave-active {
+  transition:
+    opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.chip-fade-stagger-enter-from,
+.chip-fade-stagger-leave-to {
+  opacity: 0;
+  transform: translateY(22px) scale(0.97);
+}
+
+.chip-fade-stagger-enter-to,
+.chip-fade-stagger-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 </style>

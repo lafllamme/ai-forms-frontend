@@ -175,7 +175,7 @@ onMounted(() => {
           />
           <div class="flex items-center justify-end">
             <div
-              class="aspect-square flex items-center justify-center rounded-full bg-pureBlack p-2 color-sky-5 transition dark:bg-pureWhite"
+              class="aspect-square flex items-center justify-center rounded-full bg-pureBlack p-2 color-sky-8 transition dark:bg-pureWhite"
               type="submit"
             >
               <button

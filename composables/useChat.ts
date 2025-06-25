@@ -6,7 +6,7 @@ import { consola } from 'consola'
 /**
  * A single chat message (user/assistant/system)
  */
-export interface ChatMessage {
+export interface ChatMessageApi {
   role: 'user' | 'assistant' | 'system'
   content: string
 }
@@ -24,8 +24,7 @@ export interface ChatResponse {
  * Talks to our Nuxt server endpoint at /api/chat (not directly to Python!).
  */
 export function useChat() {
-  // EXPLICITLY TYPE the chat history as ChatMessage[]
-  const chatHistory = useState<ChatMessage[]>('formChatHistory', () => [])
+  const chatHistory = useState<ChatMessageApi[]>('formChatHistory', () => [])
 
   // add initial welcome message
   if (chatHistory.value.length === 0) {
