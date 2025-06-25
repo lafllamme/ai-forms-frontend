@@ -2,11 +2,10 @@
 import { storeToRefs } from 'pinia'
 import { ref, watch } from 'vue'
 import ToggleButton from '@/components/Buttons/ToggleButton/ToggleButton.vue'
-import CheatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
 import { useStatus } from '@/composables/useStatus'
 import { useChatStore } from '@/stores/chat'
+import CheatHeader from '~/components/Chat/ChatHeader/CheatHeader.vue'
 import ProgressBar from '~/components/Form/ProgressBar/ProgressBar.vue'
-import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
 
 const summaryOpen = ref(true)
 const status = useStatus()
@@ -21,9 +20,7 @@ function toggleSummary() {
 const statusData = ref<any>(null)
 const isLoading = ref(false)
 const errorMsg = ref<string | null>(null)
-const lastRequestTime = ref<number | null>(null)
 const lastPercent = ref(0)
-const isSessionFinished = ref(false)
 let hasLoadedOnce = false
 
 function patchStatusWithProgressClamp(newData: any) {
@@ -39,25 +36,8 @@ function patchStatusWithProgressClamp(newData: any) {
     statusData.value[key] = newData[key]
   }
 
-  // Clamp percent
+  // Clamp percent (never allow downwards jump)
   const incomingPercent = newData?.progress?.percentage_complete ?? 0
-
-  // Check for session finished
-  if (
-  // If phase is submit, or any logic you want to treat as "finished"
-    (newData.phase === 'submit' || incomingPercent >= 100)
-    && !isSessionFinished.value
-  ) {
-    lastPercent.value = 100
-    isSessionFinished.value = true
-    // Optionally override percent in UI
-    if (!statusData.value.progress)
-      statusData.value.progress = {}
-    statusData.value.progress.percentage_complete = 100
-    return
-  }
-
-  // Only allow percent to increase, not decrease
   if (incomingPercent >= lastPercent.value) {
     lastPercent.value = incomingPercent
     if (!statusData.value.progress)
@@ -65,7 +45,6 @@ function patchStatusWithProgressClamp(newData: any) {
     statusData.value.progress.percentage_complete = incomingPercent
   }
   else {
-    // Keep showing the highest percent
     if (!statusData.value.progress)
       statusData.value.progress = {}
     statusData.value.progress.percentage_complete = lastPercent.value
@@ -74,18 +53,15 @@ function patchStatusWithProgressClamp(newData: any) {
 
 function fetchStatus() {
   isLoading.value = true
-  const start = performance.now()
   getStatus(sessionId.value)
     .then((res) => {
-      lastRequestTime.value = Math.round(performance.now() - start)
       patchStatusWithProgressClamp(res)
       hasLoadedOnce = true
       errorMsg.value = null
       isLoading.value = false
       setTimeout(fetchStatus, 15000)
     })
-    .catch((error) => {
-      lastRequestTime.value = Math.round(performance.now() - start)
+    .catch(() => {
       errorMsg.value = 'Fehler beim Laden des Status'
       isLoading.value = false
       setTimeout(fetchStatus, 15000)
@@ -101,149 +77,137 @@ watch(sessionId, (id) => {
 <template>
   <div
     :style="{
-      width: summaryOpen ? '20rem' : '1.75rem',
-      minWidth: summaryOpen ? '20rem' : '1.75rem',
-      overflow: 'visible',
-      boxShadow: summaryOpen ? '0 2px 24px 0 #0002' : '',
-      background: summaryOpen ? 'var(--un-bg-gray-6, #333)' : 'transparent',
+      width: summaryOpen ? '22rem' : '1.75rem',
+      minWidth: summaryOpen ? '22rem' : '1.75rem',
+      background: summaryOpen ? 'var(--un-bg-gray-1, #fff)' : 'transparent',
     }"
-    class="fixed right-0 top-0 z-50 h-full flex items-start transition-all duration-300"
+    class="fixed right-0 top-0 z-50 h-full flex items-start border-l border-gray-2 transition-all duration-300"
   >
     <ToggleButton
-      :class="useClsx(
-        'absolute top-12 z-20 z-50',
-        summaryOpen ? '-left-7' : 'left-0',
-      )"
+      :class="useClsx('absolute top-12 z-20', summaryOpen ? '-left-7' : 'left-0')"
       :open="summaryOpen"
       @click="toggleSummary"
     />
     <Transition mode="out-in" name="slide-panel">
       <div
-        v-if="summaryOpen"
-        key="open"
-        class="relative h-full w-full flex flex-col justify-start border-l border-gray-2 bg-gray-6 p-6 color-sky-11 animate-fade-in"
+        v-if="summaryOpen" key="open"
+        class="relative h-full w-full flex flex-col border-gray-2 px-0 pt-0 dark:bg-gray-7"
         style="transition: background 0.3s;"
       >
-        <div class="mt-6">
-          <CheatHeader />
-        </div>
-        <div class="mt-4">
-          <div v-if="isLoading && !hasLoadedOnce" class="text-gray-400 text-xs">
-            Lade Status…
+        <!-- Smart Assistant Card -->
+        <div
+          class="border-b border-gray-2 bg-gray-7 px-7 pb-2 pt-6 dark:bg-gray-1"
+        >
+          <div>
+            <CheatHeader />
           </div>
-          <div v-else-if="errorMsg && !hasLoadedOnce" class="text-red-400 text-xs">
-            {{ errorMsg }}
-          </div>
-          <div v-else>
-            <div class="mb-4 flex items-center justify-start gap-2">
-              <Icon class="size-5 color-sky-12" name="iconoir:attachment" />
-              <h3 class="font-baskerville text-lg color-pureBlack font-bold leading-none tracking-tight dark:color-pureWhite">
-                Zusammenfassung
-              </h3>
-            </div>
+          <div class="pb-2">
             <ProgressBar
               :percent="statusData?.progress?.percentage_complete ?? 0"
+              class="mb-1"
               show-percent
             />
-            <template v-if="isSessionFinished">
-              <div class="crimson-text-regular mt-8 text-center text-2xl color-sky-12 font-light tracking-normal">
-                Vielen Dank! Das Formular wurde erfolgreich abgeschlossen.
+            <div class="font-geist mt-2 flex items-center text-xs color-gray-11">
+              <div class="flex justify-start gap-1">
+                <p>Phase</p>
+                <p class="color-pureBlack uppercase dark:color-pureWhite">
+                  {{ statusData?.phase }}
+                </p>
               </div>
-            </template>
-            <div v-else class="mt-2 text-xs leading-relaxed space-y-1">
-              <div><b>Phase:</b> {{ statusData?.phase }}</div>
-              <div><b>Formular-ID:</b> {{ statusData?.form_id }}</div>
-              <div v-if="statusData?.receiver">
-                <b>Empfänger:</b> {{ statusData.receiver }}
-              </div>
-              <div v-if="statusData?.answers && Object.keys(statusData.answers).length">
-                <b>Answers:</b>
-                <ul class="ml-2 list-disc">
-                  <li v-for="(val, key) in statusData.answers" :key="key">
-                    <b>{{ key }}:</b> {{ val }}
-                  </li>
-                </ul>
+              <div class="px-3">
+                •
               </div>
               <div v-if="statusData?.progress">
-                <div class="mt-2">
-                  <b>Fortschritt:</b>
-                  <div class="ml-2">
-                    <div>
-                      <b>Beantwortete Felder:</b> {{ statusData.progress.answered_fields }} /
-                      {{ statusData.progress.total_fields }}
-                    </div>
-                    <div>
-                      <b>Aktueller Schritt:</b> {{ statusData.progress.current_step }} /
-                      {{ statusData.progress.total_steps }}
-                    </div>
-                    <div v-if="statusData.progress.current_field">
-                      <b>Aktuelles Feld:</b>
-                      <span>{{ statusData.progress.current_field.label }}</span>
-                      <span v-if="statusData.progress.current_field.required" class="text-red-500 ml-1">*</span>
-                      <span class="ml-1 text-gray-11">({{ statusData.progress.current_field.type }})</span>
-                    </div>
-                    <div v-if="statusData.progress.missing_fields && statusData.progress.missing_fields.length">
-                      <b>Fehlende Felder:</b>
-                      <span>{{ statusData.progress.missing_fields.join(', ') }}</span>
-                    </div>
-                    <div v-if="statusData.progress.phase_progress" class="mt-1">
-                      <b>Phasen-Fortschritt:</b>
-                      <ul class="ml-2 list-disc">
-                        <li
-                          v-for="(val, key) in statusData.progress.phase_progress"
-                          :key="key"
-                        >
-                          {{ key }}: {{ val }}%
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
+                <p>
+                  Schritt
+                  <span>
+                    {{ statusData.progress.current_step }}
+                  </span>/<span>
+                    {{ statusData.progress.total_steps }}
+                  </span>
+                </p>
               </div>
-              <!-- === ANALYTICS SECTION === -->
-              <div v-if="statusData?.analytics" class="mt-4 border-t border-gray-4 pt-3">
-                <div class="mb-1 flex items-center justify-start gap-1.5 text-sm font-semibold">
-                  <Icon
-                    class="size-5 color-sky-11"
-                    name="iconoir:multiple-pages"
-                  />
-                  <p class="font-manrope color-gray-12A font-light">
-                    Analytics
-                  </p>
-                </div>
-                <ul class="ml-1">
-                  <li>
-                    <b>Komplexität:</b> {{ statusData.analytics.form_complexity }}
-                  </li>
-                  <li>
-                    <b>Schwierigkeitsgrad:</b> {{ statusData.analytics.form_difficulty }}
-                  </li>
-                  <li>
-                    <b>LLM-Requests:</b> {{ statusData.analytics.llm_calls_count }}
-                  </li>
-                  <li>
-                    <b>Antwortzeit Ø:</b> {{ statusData.analytics.average_response_time }} ms
-                  </li>
-                  <li>
-                    <b>Nachrichten gesamt:</b> {{ statusData.analytics.messages_count }}
-                  </li>
-                  <li>
-                    <b>User Language:</b> {{ statusData.analytics.user_language }}
-                  </li>
-                </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto">
+          <!-- Aktuell -->
+          <div v-if="statusData?.progress?.current_field" class="mb-4 bg-sky-12">
+            <div
+              class="font-geist mb-2 flex items-center justify-start gap-2 p-6 pb-1 text-sm color-sky-1 font-bold leading-none tracking-tight uppercase"
+            >
+              <Icon class="size-5 color-sky-4" name="tabler:target" />
+              <h4 class="mb-px color-sky-5 leading-none">
+                Aktuelles Feld
+              </h4>
+            </div>
+            <div class="p-5 pt-0">
+              <div class="flex flex-col gap-1 border border-blue-2 rounded-xl bg-blue-1 px-5 py-4">
+                <span class="font-geist dark:color-white text-lg color-pureBlack color-red-12 font-bold">
+                  {{ statusData.progress.current_field.label }}<span
+                    v-if="statusData.progress.current_field.required"
+                  >*</span>
+                  <span class="font-geist ml-1 text-xs color-gray-11">({{
+                    statusData.progress.current_field.type
+                  }})</span>
+                </span>
+                <span class="text-sm color-blue-7 font-medium">In Bearbeitung</span>
               </div>
-              <!-- === END ANALYTICS SECTION === -->
+            </div>
+          </div>
+          <!-- Ausstehend -->
+          <div v-if="statusData?.progress?.missing_fields?.length" class="mb-4">
+            <div
+              class="font-geist mb-2 flex items-center gap-2 text-xs color-gray-12 font-bold tracking-wide uppercase"
+            >
+              Ausstehend
+              <span class="bg-red-100 text-red-600 ml-1 rounded-full px-2 py-0.5 text-xs font-bold">{{
+                statusData.progress.missing_fields.length
+              }}</span>
+            </div>
+            <div class="flex flex-col gap-2">
               <div
-                v-if="lastRequestTime !== null"
-                class="font-geist mt-3 flex justify-end gap-2 text-xs color-gray-11 font-light"
+                v-for="field in statusData.progress.missing_fields" :key="field"
+                class="flex items-center rounded-md bg-gray-1 px-3 py-2 text-base color-gray-12 font-medium font-mono dark:bg-gray-7"
               >
-                <div>
-                  <NumberTicker
-                    :value="lastRequestTime"
-                  />
-                  <span>ms</span>
-                </div>
+                <span class="bg-red-400 mr-2 inline-block h-2 w-2 rounded-full" />
+                {{ field }}
               </div>
+            </div>
+          </div>
+          <!-- Stats Row -->
+          <div class="mb-4 mt-6 flex items-center justify-between gap-2">
+            <div class="flex flex-1 flex-col items-center">
+              <span class="font-geist text-xl color-gray-12 font-bold">{{
+                statusData?.progress?.answered_fields ?? 0
+              }}</span>
+              <span class="mt-0.5 text-xs color-gray-11">Felder</span>
+            </div>
+            <div class="flex flex-1 flex-col items-center">
+              <span class="font-geist text-xl color-gray-12 font-bold">{{
+                statusData?.analytics?.form_complexity ?? 0
+              }}</span>
+              <span class="mt-0.5 text-xs color-gray-11">Komplex</span>
+            </div>
+            <div class="flex flex-1 flex-col items-center">
+              <span class="font-geist text-xl color-gray-12 font-bold">{{
+                statusData?.analytics?.llm_calls_count ?? 0
+              }}</span>
+              <span class="mt-0.5 text-xs color-gray-11">Requests</span>
+            </div>
+          </div>
+          <hr class="my-3 border-gray-3">
+          <!-- Formular Meta -->
+          <div>
+            <div class="font-geist mb-1 text-xs color-gray-11">
+              Formular
+            </div>
+            <div class="font-geist text-lg color-gray-12 font-bold">
+              {{ statusData?.receiver }}
+            </div>
+            <div class="font-geist mb-2 text-sm color-gray-8">
+              {{ statusData?.form_id }}
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@
     )"
   >
     <div
-      class="absolute right-0 top-1 z-100 flex items-center rounded-full bg-sky-12A p-2 py-px color-sky-5 md:right-2 md:top-2"
+      class="absolute bottom-2 right-2 z-100 flex items-center rounded-full bg-sky-12A p-2 py-px color-sky-5 md:right-4"
     >
       <span class="figtree-regular text-sm font-light">Beta</span>
     </div>

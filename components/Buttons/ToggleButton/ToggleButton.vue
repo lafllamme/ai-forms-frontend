@@ -9,7 +9,7 @@ defineEmits(['click'])
       'hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-5',
       'absolute z-30 h-14 w-7 flex items-center justify-center',
       'rounded-l-xl',
-      'bg-gray-6 transition-all duration-200',
+      'dark:bg-gray-1 bg-gray-7 transition-all duration-200',
     )"
     aria-label="Toggle chat summary"
     @click="$emit('click')"
