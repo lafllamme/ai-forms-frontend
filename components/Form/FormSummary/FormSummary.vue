@@ -179,12 +179,11 @@ watch(sessionId, (id) => {
                 }}
               </div>
             </div>
-            <div class="flex flex-col gap-2">
+            <div class="grid grid-cols-2 gap-2">
               <div
                 v-for="field in statusData.progress.missing_fields" :key="field"
-                class="flex items-center rounded-md bg-gray-1 px-3 py-2 text-base color-gray-12 font-medium font-mono dark:bg-gray-7"
+                class="jetbrains-mono-regular flex items-center justify-start rounded-md bg-gray-1 px-3 py-2 text-sm color-gray-12 font-medium dark:bg-gray-7"
               >
-                <span class="mr-2 inline-block h-2 w-2 rounded-full bg-sky-4" />
                 {{ field }}
               </div>
             </div>
