@@ -7,11 +7,11 @@ import { useChatStore } from '@/stores/chat'
 import { generateSessionId } from '@/utils/uuid'
 import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
 import RadiantText from '~/components/Text/RadiantText/RadiantText.vue'
-// <--- utility as in previous messages
+// <--- utility as before
 
 const chatStore = useChatStore()
 const { sessionId } = storeToRefs(chatStore)
-const { chatHistory, sendFormChat, clearChat } = useChat()
+const { chatHistory, sendFormChat, clearChat, cancelFormChat } = useChat()
 const isMounted = ref(false)
 
 const userInput = ref('')
@@ -29,9 +29,21 @@ const chatWindow = useTemplateRef('chatWindow')
  * 'idle' = no animation
  */
 const iconAnimPhase = ref<'idle' | 'grow' | 'spin'>('idle')
+const showCancelIcon = ref(false)
+let cancelIconTimeout: ReturnType<typeof setTimeout> | null = null
 
 watch(isLoading, (val) => {
   iconAnimPhase.value = val ? 'grow' : 'idle'
+  // Cancel any pending timer
+  if (cancelIconTimeout)
+    clearTimeout(cancelIconTimeout)
+  showCancelIcon.value = false
+  if (val) {
+    // After 8s, show the cancel icon
+    cancelIconTimeout = setTimeout(() => {
+      showCancelIcon.value = true
+    }, 8000)
+  }
 })
 
 function generateSessionIdIfNeeded() {
@@ -113,7 +125,6 @@ onMounted(() => {
   >
     <div class="relative min-h-0 flex flex-1 flex-col">
       <div ref="chatWindow" class="flex-1 overflow-y-auto pr-1 space-y-2" style="scroll-padding-top: 120px;">
-        <!-- Session ID always from store! -->
         <div
           :class="useClsx(
             isMounted ? 'animate-fade-in' : 'opacity-0',
@@ -127,7 +138,6 @@ onMounted(() => {
           <span class="color-sky-11"> {{ sessionId }}</span>
           <div class="h-4 w-2 bg-sky-8 animate-pulse" />
         </div>
-        <!-- Chat bubbles/messages -->
         <template v-for="(msg, idx) in chatHistory" :key="idx">
           <div
             :class="[
@@ -148,7 +158,6 @@ onMounted(() => {
             </div>
           </div>
         </template>
-        <!-- Loading spinner -->
         <div v-if="isLoading" class="mt-2 flex justify-start">
           <RadiantText
             class="font-manrope inline-flex items-center justify-start py-1 transition-all ease-out hover:text-gray-6 hover:duration-300"
@@ -156,10 +165,8 @@ onMounted(() => {
             <span class="text-sm font-bold"> Form Assistant denkt nach ...</span>
           </RadiantText>
         </div>
-        <!-- Always keep space at the bottom for the input area -->
         <div class="pb-8" />
       </div>
-      <!-- Input area & debug: sticky at the bottom -->
       <form
         class="flex items-center justify-center gap-4"
         @click="focusTextarea"
@@ -186,34 +193,38 @@ onMounted(() => {
               type="submit"
             >
               <button
-                :disabled="isDisabled"
+                :disabled="isDisabled && !isLoading"
+                :title="isLoading ? (showCancelIcon ? 'Anfrage abbrechen' : 'Antwort wird geladen …') : 'Absenden'"
                 class="aspect-square flex items-center"
-                tabindex="0" type="button"
-                @click="sendMessage"
+                tabindex="0"
+                type="button"
+                @click="isLoading ? cancelFormChat() : sendMessage()"
               >
-                <Icon v-if="!isLoading" class="size-5" name="iconoir:arrow-up" />
+                <Icon
+                  v-if="!isLoading"
+                  class="size-5"
+                  name="iconoir:arrow-up"
+                />
                 <Icon
                   v-else
                   :class="[
-                    iconAnimPhase === 'grow' ? 'animate-grow' : '',
-                    iconAnimPhase === 'spin' ? 'animate-spin-infinite' : '',
-                  ]" class="size-5"
-                  name="tabler:circle-dashed"
-                  @animationend="iconAnimPhase === 'grow' ? onGrowSpinEnd() : undefined"
+                    showCancelIcon ? ''
+                    : (iconAnimPhase === 'grow' ? 'animate-grow' : ''),
+                    showCancelIcon ? ''
+                    : (iconAnimPhase === 'spin' ? 'animate-spin-infinite' : ''),
+                  ]"
+                  :name="showCancelIcon ? 'tabler:square-filled' : 'tabler:circle-dashed'"
+                  class="size-5"
+                  @animationend="iconAnimPhase === 'grow' && !showCancelIcon ? onGrowSpinEnd() : undefined"
                 />
               </button>
             </div>
           </div>
         </div>
       </form>
-
-      <!-- Debug panel -->
       <div class="mt-2 flex items-center justify-between text-xs text-gray-11">
         <span>API endpoint: <code class="text-xs">{{ $config.public.formChatApi || '/api/chat' }}</code></span>
-        <div
-          v-if="requestTime !== null"
-          class="flex items-center text-[11px]"
-        >
+        <div v-if="requestTime !== null" class="flex items-center text-[11px]">
           <Icon
             class="sky-12 mr-1 size-3"
             name="iconoir:timer"
@@ -233,10 +244,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/**
-  * Animation for an element that grows smooth with scale
- */
-
 @keyframes grow {
   0% {
     transform: scale(1);
@@ -263,7 +270,6 @@ onMounted(() => {
   animation: spinInfinite 0.7s linear infinite;
 }
 
-/* Animation 4: Slide Up */
 .slide-up {
   animation: slideUp 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   opacity: 0;
