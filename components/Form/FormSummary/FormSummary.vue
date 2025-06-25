@@ -101,14 +101,14 @@ watch(sessionId, (id) => {
     <Transition mode="out-in" name="slide-panel">
       <div
         v-if="summaryOpen" key="open"
-        class="relative h-full w-full flex flex-col border-gray-2 bg-gray-7 px-0 pt-0 dark:bg-gray-1"
+        class="relative h-full w-full flex flex-col border-gray-2 bg-sand-8 px-0 pt-0 dark:bg-gray-1"
         style="transition: background 0.3s;"
       >
         <!-- Header -->
         <Transition appear name="section-fade-slide">
           <div
             key="header"
-            class="border-b border-gray-2 bg-gray-7 px-7 pt-4 dark:bg-gray-1"
+            class="border-b border-gray-2 bg-sand-8 px-7 pt-4 dark:bg-gray-1"
           >
             <div>
               <CheatHeader />
