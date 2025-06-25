@@ -143,9 +143,13 @@ watch(sessionId, (id) => {
           </div>
         </Transition>
 
+        <Transition appear name="section-fade-slide">
+          <hr key="divider" class="mx-6 my-2 border-gray-9">
+        </Transition>
+
         <!-- Stats Row -->
         <Transition appear name="section-fade-slide">
-          <div key="stats" class="my-4 flex items-center justify-between gap-2">
+          <div key="stats" class="my-2 flex items-center justify-between gap-2">
             <div class="flex flex-1 flex-col items-center">
               <NumberTicker
                 :value="statusData?.analytics?.llm_calls_count ?? 0"
@@ -173,7 +177,7 @@ watch(sessionId, (id) => {
         </Transition>
 
         <Transition appear name="section-fade-slide">
-          <hr key="divider" class="mx-6 my-3 border-gray-9">
+          <hr key="divider" class="mx-6 my-2 border-gray-9">
         </Transition>
 
         <!-- Formular Meta (now above "Aktuelles Feld") -->
