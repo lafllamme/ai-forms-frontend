@@ -173,15 +173,17 @@ watch(sessionId, (id) => {
               <div
                 class="flex flex-col gap-1 rounded-xl bg-gray-7 px-5 py-4 dark:bg-gray-1"
               >
-                <div class="font-geist text-lg color-pureBlack font-bold dark:color-pureWhite">
-                  <div class="flex items-center justify-start gap-2">
+                <div class="text-lg color-pureBlack font-bold dark:color-pureWhite">
+                  <div class="geist-regular flex items-center justify-start gap-2 font-bold tracking-wide">
                     <p>{{ statusData.progress.current_field.label }}</p>
                     <div
                       v-if="statusData.progress.current_field.required"
                     >
                       *
                     </div>
-                    <div class="font-geist ml-1 flex justify-end text-xs color-gray-11 font-light capitalize">
+                    <div
+                      class="jetbrains-mono-regular ml-1 flex justify-end text-xs color-gray-11 font-light capitalize"
+                    >
                       <p>
                         ({{
                           statusData.progress.current_field.type
@@ -190,7 +192,7 @@ watch(sessionId, (id) => {
                     </div>
                   </div>
                 </div>
-                <span class="text-sm color-sky-11 font-medium">In Bearbeitung</span>
+                <span class="font-manrope text-sm color-sky-11 font-medium">In Bearbeitung</span>
               </div>
             </div>
           </div>
@@ -226,8 +228,31 @@ watch(sessionId, (id) => {
             <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
               {{ statusData?.receiver }}
             </div>
-            <div class="font-dm-mono mb-2 text-sm color-gray-8">
+            <div class="font-dm-mono mb-2 text-sm color-gray-9">
               {{ statusData?.form_id }}
+            </div>
+            <!-- Neue Zusammenfassung -->
+            <div v-if="statusData?.answers && Object.keys(statusData.answers).length" class="mt-4 pb-6">
+              <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-12 font-light">
+                <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
+                <p>Deine bisherigen Eingaben</p>
+              </div>
+              <div class="flex flex-col gap-2">
+                <div
+                  v-for="(val, key) in statusData.answers"
+                  :key="key"
+                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 dark:bg-gray-7"
+                >
+                  <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
+                    {{
+                      key
+                    }}
+                  </p>
+                  <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
+                    {{ val }}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
