@@ -6,6 +6,7 @@ import { useStatus } from '@/composables/useStatus'
 import { useChatStore } from '@/stores/chat'
 import CheatHeader from '~/components/Chat/ChatHeader/CheatHeader.vue'
 import ProgressBar from '~/components/Form/ProgressBar/ProgressBar.vue'
+import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
 
 const summaryOpen = ref(true)
 const status = useStatus()
@@ -96,7 +97,7 @@ watch(sessionId, (id) => {
       >
         <!-- Smart Assistant Card -->
         <div
-          class="border-b border-gray-2 bg-gray-7 px-7 pb-2 pt-6 dark:bg-gray-1"
+          class="border-b border-gray-2 bg-gray-7 px-7 pb-2 pt-4 dark:bg-gray-1"
         >
           <div>
             <CheatHeader />
@@ -131,6 +132,32 @@ watch(sessionId, (id) => {
           </div>
         </div>
 
+        <div class="mb-4 mt-6 flex items-center justify-between gap-2">
+          <div class="flex flex-1 flex-col items-center">
+            <NumberTicker
+              :value="statusData?.analytics?.llm_calls_count ?? 0"
+              class="jetbrains-mono-regular text-xl color-gray-12 font-bold"
+            />
+            <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Requests</span>
+          </div>
+          <div class="flex flex-1 flex-col items-center">
+            <div class="jetbrains-mono-regular text-xl color-gray-12 font-bold">
+              <NumberTicker
+                :value="statusData?.analytics?.form_complexity ?? 0 "
+              />
+            </div>
+            <span
+              class="font-dm-mono mt-0.5 text-xs color-gray-11 capitalize"
+            >{{ statusData?.analytics?.form_difficulty ?? 'Easy' }}</span>
+          </div>
+          <div class="flex flex-1 flex-col items-center">
+            <span class="jetbrains-mono-regular text-xl color-gray-12 font-bold">{{
+              statusData?.progress?.answered_fields ?? 0
+            }}</span>
+            <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Felder</span>
+          </div>
+        </div>
+
         <div class="flex-1 overflow-y-auto">
           <!-- Aktuell -->
           <div v-if="statusData?.progress?.current_field" class="mb-4 bg-indigo-12">
@@ -143,7 +170,9 @@ watch(sessionId, (id) => {
               </h4>
             </div>
             <div class="p-5 pt-0">
-              <div class="flex flex-col gap-1 border border-blue-2 rounded-xl bg-blue-1 px-5 py-4">
+              <div
+                class="flex flex-col gap-1 rounded-xl bg-gray-7 px-5 py-4 dark:bg-gray-1"
+              >
                 <div class="font-geist text-lg color-pureBlack font-bold dark:color-pureWhite">
                   <div class="flex items-center justify-start gap-2">
                     <p>{{ statusData.progress.current_field.label }}</p>
@@ -168,57 +197,36 @@ watch(sessionId, (id) => {
           <!-- Ausstehend -->
           <div v-if="statusData?.progress?.missing_fields?.length" class="mb-4 px-6">
             <div
-              class="font-geist mb-2 flex items-center gap-2 text-base color-gray-12 font-bold font-bold tracking-wide uppercase uppercase"
+              class="font-geist mb-2 flex items-center justify-between gap-2 text-base color-gray-12 font-bold font-bold tracking-wide uppercase"
             >
               Ausstehende Felder
               <div
-                class="aspect-square flex items-center justify-center rounded-full bg-sky-6 px-2 py-0.5 text-xs color-sky-11 font-bold"
+                class="aspect-square flex items-center rounded-full bg-indigo-7 px-2 py-0.5 text-xs color-pureBlack font-bold dark:color-pureWhite"
               >
-                {{
-                  statusData.progress.missing_fields.length
-                }}
+                <NumberTicker :value="statusData.progress.missing_fields.length" />
               </div>
             </div>
             <div class="grid grid-cols-2 gap-2">
               <div
                 v-for="field in statusData.progress.missing_fields" :key="field"
-                class="jetbrains-mono-regular flex items-center justify-start rounded-md bg-gray-1 px-3 py-2 text-sm color-gray-12 font-medium dark:bg-gray-7"
+                class="font-dm-mono flex items-center justify-start rounded-md bg-gray-1 px-3 py-2 text-sm color-gray-12 font-medium dark:bg-gray-7"
               >
                 {{ field }}
               </div>
             </div>
           </div>
           <!-- Stats Row -->
-          <div class="mb-4 mt-6 flex items-center justify-between gap-2">
-            <div class="flex flex-1 flex-col items-center">
-              <span class="font-geist text-xl color-gray-12 font-bold">{{
-                statusData?.progress?.answered_fields ?? 0
-              }}</span>
-              <span class="mt-0.5 text-xs color-gray-11">Felder</span>
-            </div>
-            <div class="flex flex-1 flex-col items-center">
-              <span class="font-geist text-xl color-gray-12 font-bold">{{
-                statusData?.analytics?.form_complexity ?? 0
-              }}</span>
-              <span class="mt-0.5 text-xs color-gray-11">Komplex</span>
-            </div>
-            <div class="flex flex-1 flex-col items-center">
-              <span class="font-geist text-xl color-gray-12 font-bold">{{
-                statusData?.analytics?.llm_calls_count ?? 0
-              }}</span>
-              <span class="mt-0.5 text-xs color-gray-11">Requests</span>
-            </div>
-          </div>
-          <hr class="my-3 border-gray-3">
+
+          <hr class="mx-6 my-3 border-gray-9">
           <!-- Formular Meta -->
-          <div>
-            <div class="font-geist mb-1 text-xs color-gray-11">
+          <div class="px-6">
+            <div class="font-geist b-1 text-sm color-gray-11 font-light font-medium tracking-tight">
               Formular
             </div>
-            <div class="font-geist text-lg color-gray-12 font-bold">
+            <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
               {{ statusData?.receiver }}
             </div>
-            <div class="font-geist mb-2 text-sm color-gray-8">
+            <div class="font-dm-mono mb-2 text-sm color-gray-8">
               {{ statusData?.form_id }}
             </div>
           </div>
