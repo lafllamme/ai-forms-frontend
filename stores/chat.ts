@@ -16,7 +16,7 @@ export const useChatStore = defineStore('chat', () => {
   const sessionId = ref<string>('')
   const history = ref<ChatMessage[]>([])
   const status = ref<ChatStatus | null>(null)
-  const loading = ref(false)
+  const isLoading = ref(false)
 
   // Logging
   function _log(msg: string, ...args: any[]) {
@@ -52,7 +52,7 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   function setLoading(val: boolean) {
-    loading.value = val
+    isLoading.value = val
   }
 
   // Computed: last message
@@ -67,7 +67,7 @@ export const useChatStore = defineStore('chat', () => {
     sessionId,
     history,
     status,
-    loading,
+    isLoading,
     lastMessage,
 
     // Actions

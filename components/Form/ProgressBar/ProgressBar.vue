@@ -29,7 +29,8 @@ defineProps<{
         class="progress-bar-shimmer relative h-3 rounded-full bg-indigo-7"
       >
         <span
-          class="shimmer-anim pointer-events-none absolute left-0 top-0 block h-full w-full"
+          :class="!(Math.round(percent) >= 100) && 'shimmer-anim'"
+          class="pointer-events-none absolute left-0 top-0 block h-full w-full"
         />
       </div>
     </div>

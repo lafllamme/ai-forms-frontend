@@ -15,7 +15,8 @@ const { chatHistory, sendFormChat, clearChat } = useChat()
 const isMounted = ref(false)
 
 const userInput = ref('')
-const isLoading = ref(false)
+const { isLoading } = storeToRefs(chatStore)
+const { setLoading } = chatStore
 const requestTime = ref<number | null>(null)
 const isDisabled = computed(() => isLoading.value || !userInput.value.trim())
 const textArea = useTemplateRef('textArea')
@@ -46,7 +47,7 @@ generateSessionIdIfNeeded()
 async function sendMessage() {
   if (!userInput.value.trim())
     return
-  isLoading.value = true
+  setLoading(true)
   const start = performance.now()
   try {
     const inputContent = userInput.value.trim()
@@ -55,7 +56,7 @@ async function sendMessage() {
   }
   finally {
     requestTime.value = Math.round(performance.now() - start)
-    isLoading.value = false
+    setLoading(false)
   }
 }
 
@@ -135,12 +136,12 @@ onMounted(() => {
           >
             <div
               :class="useClsx(
-                'font-manrope slide-up max-w-[70%] break-words',
+                'font-manrope slide-up max-w-[70%] my-4 break-words',
                 'rounded-xl px-4 py-2 color-pureBlack shadow',
                 'transition-colors duration-200 dark:color-pureWhite',
                 msg.role === 'user'
-                  ? 'bg-sky-4 text-white rounded-br-none'
-                  : 'bg-gray-6 text-base-content rounded-bl-none border border-base-300',
+                  ? 'bg-indigo-8 text-white rounded-br-none'
+                  : 'bg-gray-8 text-base-content rounded-bl-none border border-base-300',
               )"
             >
               <span v-html="msg.content" />

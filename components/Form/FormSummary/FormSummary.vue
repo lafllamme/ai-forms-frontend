@@ -118,15 +118,12 @@ watch(sessionId, (id) => {
                 class="mb-1"
                 show-percent
               />
-              <div class="font-geist mt-2 flex items-center text-xs color-gray-11">
-                <div class="flex justify-start gap-1">
+              <div class="font-geist mt-2 flex flex items-center justify-between text-xs color-gray-11">
+                <div class="flex items-center justify-start gap-1">
                   <p>Phase</p>
                   <p class="color-pureBlack uppercase dark:color-pureWhite">
                     {{ statusData?.phase }}
                   </p>
-                </div>
-                <div class="px-3">
-                  •
                 </div>
                 <div v-if="statusData?.progress">
                   <p>
@@ -171,7 +168,9 @@ watch(sessionId, (id) => {
               <span class="jetbrains-mono-regular text-xl color-gray-12 font-bold">{{
                 statusData?.progress?.answered_fields ?? 0
               }}</span>
-              <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Felder</span>
+              <span class="font-dm-mono mt-0.5 text-xs color-gray-11">
+                {{ statusData?.progress?.answered_fields > 1 ? 'Felder' : 'Feld' }}
+              </span>
             </div>
           </div>
         </Transition>
