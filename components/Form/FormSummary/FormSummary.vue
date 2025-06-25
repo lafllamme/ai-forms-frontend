@@ -6,6 +6,7 @@ import { useStatus } from '@/composables/useStatus'
 import { useChatStore } from '@/stores/chat'
 import CheatHeader from '~/components/Chat/ChatHeader/CheatHeader.vue'
 import ProgressBar from '~/components/Form/ProgressBar/ProgressBar.vue'
+import HyperText from '~/components/Text/HyperText/HyperText.vue'
 import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
 
 const summaryOpen = ref(true)
@@ -121,9 +122,12 @@ watch(sessionId, (id) => {
               <div class="font-geist mt-2 flex flex items-center justify-between text-xs color-gray-11">
                 <div class="flex items-center justify-start gap-1">
                   <p>Phase</p>
-                  <p class="color-pureBlack uppercase dark:color-pureWhite">
-                    {{ statusData?.phase }}
-                  </p>
+                  <HyperText
+                    :animate-on-load="true"
+                    :duration="800"
+                    :text="statusData?.phase || ''"
+                    class="color-pureBlack uppercase dark:color-pureWhite"
+                  />
                 </div>
                 <div v-if="statusData?.progress">
                   <p>
@@ -193,8 +197,13 @@ watch(sessionId, (id) => {
                 {{ statusData?.form_id }}
               </div>
             </div>
-            <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
-              {{ statusData?.receiver }}
+            <div class="text-lg color-gray-12 font-semibold tracking-wide">
+              <HyperText
+                :animate-on-load="true"
+                :duration="800"
+                :text="statusData?.receiver || ''"
+                class="font-manrope"
+              />
             </div>
           </div>
         </Transition>
