@@ -97,7 +97,7 @@ watch(sessionId, (id) => {
       >
         <!-- Smart Assistant Card -->
         <div
-          class="border-b border-gray-2 bg-gray-7 px-7 pb-2 pt-4 dark:bg-gray-1"
+          class="border-b border-gray-2 bg-gray-7 px-7 pt-4 dark:bg-gray-1"
         >
           <div>
             <CheatHeader />
@@ -132,7 +132,8 @@ watch(sessionId, (id) => {
           </div>
         </div>
 
-        <div class="mb-4 mt-6 flex items-center justify-between gap-2">
+        <!-- Stats Row -->
+        <div class="my-4 flex items-center justify-between gap-2">
           <div class="flex flex-1 flex-col items-center">
             <NumberTicker
               :value="statusData?.analytics?.llm_calls_count ?? 0"
@@ -158,44 +159,83 @@ watch(sessionId, (id) => {
           </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto">
-          <!-- Aktuell -->
-          <div v-if="statusData?.progress?.current_field" class="mb-4 bg-indigo-12">
+        <hr class="mx-6 my-3 border-gray-9">
+        <!-- Formular Meta -->
+        <div class="px-6">
+          <div class="font-geist b-1 text-sm color-gray-11 font-light font-medium tracking-tight">
+            Formular
+          </div>
+          <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
+            {{ statusData?.receiver }}
+          </div>
+          <div class="font-dm-mono mb-2 text-sm color-gray-9">
+            {{ statusData?.form_id }}
+          </div>
+          <!-- Neue Zusammenfassung -->
+          <!--          <div v-if="statusData?.answers && Object.keys(statusData.answers).length" class="mt-4 pb-6">
+                      <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-12 font-light">
+                        <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
+                        <p>Deine bisherigen Eingaben</p>
+                      </div>
+                      <div class="flex flex-col gap-2">
+                        <div
+                          v-for="(val, key) in statusData.answers"
+                          :key="key"
+                          class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 dark:bg-gray-7"
+                        >
+                          <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
+                            {{
+                              key
+                            }}
+                          </p>
+                          <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
+                            {{ val }}
+                          </p>
+                        </div>
+                      </div>
+                    </div> -->
+        </div>
+
+        <!-- Aktuell -->
+        <div v-if="statusData?.progress?.current_field" class="mb-4 bg-indigo-12">
+          <div
+            class="font-geist mb-2 flex items-center justify-start gap-2 px-6 pb-1 pt-5 text-base color-sky-1 font-bold leading-none tracking-tight uppercase"
+          >
+            <Icon class="size-5 color-indigo-9" name="tabler:target" />
+            <h4 class="mb-px color-sky-2 leading-none">
+              Aktuelles Feld
+            </h4>
+          </div>
+          <div class="px-6 py-5 pt-0">
             <div
-              class="font-geist mb-2 flex items-center justify-start gap-2 px-5 pb-1 pt-5 text-base color-sky-1 font-bold leading-none tracking-tight uppercase"
+              class="flex flex-col gap-1 rounded-xl bg-gray-7 px-5 py-4 dark:bg-gray-1"
             >
-              <Icon class="size-5 color-indigo-9" name="tabler:target" />
-              <h4 class="mb-px color-sky-2 leading-none">
-                Aktuelles Feld
-              </h4>
-            </div>
-            <div class="p-5 pt-0">
-              <div
-                class="flex flex-col gap-1 rounded-xl bg-gray-7 px-5 py-4 dark:bg-gray-1"
-              >
-                <div class="text-lg color-pureBlack font-bold dark:color-pureWhite">
-                  <div class="geist-regular flex items-center justify-start gap-2 font-bold tracking-wide">
-                    <p>{{ statusData.progress.current_field.label }}</p>
-                    <div
-                      v-if="statusData.progress.current_field.required"
-                    >
-                      *
-                    </div>
-                    <div
-                      class="jetbrains-mono-regular ml-1 flex justify-end text-xs color-gray-11 font-light capitalize"
-                    >
-                      <p>
-                        ({{
-                          statusData.progress.current_field.type
-                        }})
-                      </p>
-                    </div>
+              <div class="text-lg color-pureBlack font-bold dark:color-pureWhite">
+                <div class="geist-regular flex items-center justify-start gap-2 font-bold tracking-wide">
+                  <p>{{ statusData.progress.current_field.label }}</p>
+                  <div
+                    v-if="statusData.progress.current_field.required"
+                  >
+                    *
+                  </div>
+                  <div
+                    class="jetbrains-mono-regular ml-1 flex justify-end text-xs color-gray-11 font-light capitalize"
+                  >
+                    <p>
+                      ({{
+                        statusData.progress.current_field.type
+                      }})
+                    </p>
                   </div>
                 </div>
-                <span class="font-manrope text-sm color-sky-11 font-medium">In Bearbeitung</span>
               </div>
+              <span class="font-manrope text-sm color-sky-11 font-medium">In Bearbeitung</span>
             </div>
           </div>
+        </div>
+
+        <!--   Ausstehend     -->
+        <div class="overflow-y-auto">
           <!-- Ausstehend -->
           <div v-if="statusData?.progress?.missing_fields?.length" class="mb-4 px-6">
             <div
@@ -214,44 +254,6 @@ watch(sessionId, (id) => {
                 class="font-dm-mono flex items-center justify-start rounded-md bg-gray-1 px-3 py-2 text-sm color-gray-12 font-medium dark:bg-gray-7"
               >
                 {{ field }}
-              </div>
-            </div>
-          </div>
-          <!-- Stats Row -->
-
-          <hr class="mx-6 my-3 border-gray-9">
-          <!-- Formular Meta -->
-          <div class="px-6">
-            <div class="font-geist b-1 text-sm color-gray-11 font-light font-medium tracking-tight">
-              Formular
-            </div>
-            <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
-              {{ statusData?.receiver }}
-            </div>
-            <div class="font-dm-mono mb-2 text-sm color-gray-9">
-              {{ statusData?.form_id }}
-            </div>
-            <!-- Neue Zusammenfassung -->
-            <div v-if="statusData?.answers && Object.keys(statusData.answers).length" class="mt-4 pb-6">
-              <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-12 font-light">
-                <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
-                <p>Deine bisherigen Eingaben</p>
-              </div>
-              <div class="flex flex-col gap-2">
-                <div
-                  v-for="(val, key) in statusData.answers"
-                  :key="key"
-                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 dark:bg-gray-7"
-                >
-                  <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
-                    {{
-                      key
-                    }}
-                  </p>
-                  <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
-                    {{ val }}
-                  </p>
-                </div>
               </div>
             </div>
           </div>
