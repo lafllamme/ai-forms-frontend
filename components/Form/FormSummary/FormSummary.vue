@@ -91,7 +91,7 @@ watch(sessionId, (id) => {
     <Transition mode="out-in" name="slide-panel">
       <div
         v-if="summaryOpen" key="open"
-        class="relative h-full w-full flex flex-col border-gray-2 px-0 pt-0 dark:bg-gray-7"
+        class="relative h-full w-full flex flex-col border-gray-2 bg-gray-7 px-0 pt-0 dark:bg-gray-1"
         style="transition: background 0.3s;"
       >
         <!-- Smart Assistant Card -->
@@ -133,45 +133,58 @@ watch(sessionId, (id) => {
 
         <div class="flex-1 overflow-y-auto">
           <!-- Aktuell -->
-          <div v-if="statusData?.progress?.current_field" class="mb-4 bg-sky-12">
+          <div v-if="statusData?.progress?.current_field" class="mb-4 bg-indigo-12">
             <div
-              class="font-geist mb-2 flex items-center justify-start gap-2 p-6 pb-1 text-sm color-sky-1 font-bold leading-none tracking-tight uppercase"
+              class="font-geist mb-2 flex items-center justify-start gap-2 px-5 pb-1 pt-5 text-base color-sky-1 font-bold leading-none tracking-tight uppercase"
             >
-              <Icon class="size-5 color-sky-4" name="tabler:target" />
-              <h4 class="mb-px color-sky-5 leading-none">
+              <Icon class="size-5 color-indigo-9" name="tabler:target" />
+              <h4 class="mb-px color-sky-2 leading-none">
                 Aktuelles Feld
               </h4>
             </div>
             <div class="p-5 pt-0">
               <div class="flex flex-col gap-1 border border-blue-2 rounded-xl bg-blue-1 px-5 py-4">
-                <span class="font-geist dark:color-white text-lg color-pureBlack color-red-12 font-bold">
-                  {{ statusData.progress.current_field.label }}<span
-                    v-if="statusData.progress.current_field.required"
-                  >*</span>
-                  <span class="font-geist ml-1 text-xs color-gray-11">({{
-                    statusData.progress.current_field.type
-                  }})</span>
-                </span>
-                <span class="text-sm color-blue-7 font-medium">In Bearbeitung</span>
+                <div class="font-geist text-lg color-pureBlack font-bold dark:color-pureWhite">
+                  <div class="flex items-center justify-start gap-2">
+                    <p>{{ statusData.progress.current_field.label }}</p>
+                    <div
+                      v-if="statusData.progress.current_field.required"
+                    >
+                      *
+                    </div>
+                    <div class="font-geist ml-1 flex justify-end text-xs color-gray-11 font-light capitalize">
+                      <p>
+                        ({{
+                          statusData.progress.current_field.type
+                        }})
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <span class="text-sm color-sky-11 font-medium">In Bearbeitung</span>
               </div>
             </div>
           </div>
           <!-- Ausstehend -->
-          <div v-if="statusData?.progress?.missing_fields?.length" class="mb-4">
+          <div v-if="statusData?.progress?.missing_fields?.length" class="mb-4 px-6">
             <div
-              class="font-geist mb-2 flex items-center gap-2 text-xs color-gray-12 font-bold tracking-wide uppercase"
+              class="font-geist mb-2 flex items-center gap-2 text-base color-gray-12 font-bold font-bold tracking-wide uppercase uppercase"
             >
-              Ausstehend
-              <span class="bg-red-100 text-red-600 ml-1 rounded-full px-2 py-0.5 text-xs font-bold">{{
-                statusData.progress.missing_fields.length
-              }}</span>
+              Ausstehende Felder
+              <div
+                class="aspect-square flex items-center justify-center rounded-full bg-sky-6 px-2 py-0.5 text-xs color-sky-11 font-bold"
+              >
+                {{
+                  statusData.progress.missing_fields.length
+                }}
+              </div>
             </div>
             <div class="flex flex-col gap-2">
               <div
                 v-for="field in statusData.progress.missing_fields" :key="field"
                 class="flex items-center rounded-md bg-gray-1 px-3 py-2 text-base color-gray-12 font-medium font-mono dark:bg-gray-7"
               >
-                <span class="bg-red-400 mr-2 inline-block h-2 w-2 rounded-full" />
+                <span class="mr-2 inline-block h-2 w-2 rounded-full bg-sky-4" />
                 {{ field }}
               </div>
             </div>
