@@ -178,18 +178,20 @@ watch(sessionId, (id) => {
 
         <!-- Formular Meta (now above "Aktuelles Feld") -->
         <Transition appear name="section-fade-slide">
-          <div key="meta" class="px-6">
+          <div key="meta" class="p-6 pb-4">
             <div
               v-if="statusData?.receiver"
-              class="font-geist b-1 text-xs color-gray-11 font-light font-medium tracking-tight uppercase"
+              class="font-geist flex justify-between b-1 text-xs color-gray-11 font-light font-medium tracking-tight"
             >
-              Formular
+              <p class="uppercase">
+                Formular
+              </p>
+              <div class="font-dm-mono mb-2 text-sm color-gray-9">
+                {{ statusData?.form_id }}
+              </div>
             </div>
             <div class="font-manrope text-lg color-gray-12 font-semibold tracking-wide">
               {{ statusData?.receiver }}
-            </div>
-            <div class="font-dm-mono mb-2 text-sm color-gray-9 uppercase">
-              {{ statusData?.form_id }}
             </div>
           </div>
         </Transition>
