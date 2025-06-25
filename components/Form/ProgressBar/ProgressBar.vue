@@ -7,19 +7,19 @@ defineProps<{
 </script>
 
 <template>
-  <div class="mb-4 max-w-md w-full">
+  <div class="max-w-md w-full">
     <div class="mb-2 flex items-center justify-between">
-      <span class="font-manrope text-sm text-gray-12 font-medium tracking-tight font-sans">
-        {{ label || 'Completion Status' }}
+      <span class="font-manrope text-xs text-gray-12 font-medium tracking-tight font-sans uppercase">
+        {{ label || 'Fortschritt' }}
       </span>
       <span
         v-if="showPercent !== false"
-        class="font-manrope text-sm color-pureBlack font-bold tracking-tighter dark:color-pureWhite"
+        class="font-manrope text-black dark:text-white text-sm color-pureBlack font-bold tracking-tighter dark:color-pureWhite"
       >
         {{ Math.round(percent) }}%
       </span>
     </div>
-    <div class="h-2 w-full flex items-center overflow-hidden rounded-full bg-gray-10">
+    <div class="h-2.5 w-full flex items-center overflow-hidden rounded-full bg-gray-10">
       <div
         :style="{ width: `${Math.min(Math.max(percent, 0), 100)}%` }"
         class="progress-bar-shimmer relative h-3 rounded-full bg-sky-1"
