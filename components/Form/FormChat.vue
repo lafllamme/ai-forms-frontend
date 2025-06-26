@@ -124,7 +124,7 @@ onMounted(() => {
     style="height: 100svh; overflow: hidden;"
   >
     <div class="relative min-h-0 flex flex-1 flex-col">
-      <div ref="chatWindow" class="flex-1 overflow-y-auto pr-1 space-y-2" style="scroll-padding-top: 120px;">
+      <div ref="chatWindow" class="chat-window flex-1 overflow-y-auto pr-1 space-y-2" style="scroll-padding-top: 120px;">
         <div
           :class="useClsx(
             isMounted ? 'animate-fade-in' : 'opacity-0',
@@ -281,5 +281,16 @@ onMounted(() => {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Hide scrollbar for Chrome, Safari, Opera */
+.chat-window::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Hide scrollbar for Firefox */
+.chat-window {
+  scrollbar-width: none;
+  -ms-overflow-style: none; /* IE and Edge */
 }
 </style>
