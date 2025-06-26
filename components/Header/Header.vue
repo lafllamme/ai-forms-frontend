@@ -37,7 +37,8 @@ function handleMouseMove(e: MouseEvent) {
   const x = ((e.clientX - rect.left) / rect.width) * 100
   const y = ((e.clientY - rect.top) / rect.height) * 100
   glassSpot.value.style.transition = 'background 120ms cubic-bezier(0.5,0.2,0.1,1)'
-  glassSpot.value.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(255,255,255,0.33) 0%, rgba(255,255,255,0.14) 36%, transparent 85%)`
+  glassSpot.value.style.background
+      = `radial-gradient(circle at ${x}% ${y}%, var(--glass-spot-1) 0%, var(--glass-spot-2) 40%, transparent 85%)`
   if (spotTimeout)
     window.clearTimeout(spotTimeout)
   spotTimeout = window.setTimeout(() => {
@@ -59,7 +60,6 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <!-- GLOBAL SVG FILTER for all glass! Only include ONCE per app, e.g. in app.vue or main layout -->
   <svg style="display:none">
     <filter id="glass-distortion" filterUnits="objectBoundingBox" height="100%" width="100%" x="0%" y="0%">
       <feTurbulence baseFrequency="0.007 0.02" numOctaves="1" result="turb" seed="17" type="fractalNoise" />
@@ -81,21 +81,19 @@ onBeforeUnmount(() => {
     role="banner"
     tabindex="-1"
   >
-    <!-- Real liquid glass distortion layer (SVG filter) -->
     <div
       class="pointer-events-none absolute inset-0 z-0"
       style="filter: url(#glass-distortion);"
     />
 
-    <!-- Interactive light spot -->
+    <!-- The spot now always uses CSS variables -->
     <div
       ref="glassSpot"
       aria-hidden="true"
       class="pointer-events-none absolute inset-0 z-10 transition-all duration-300"
-      style="background: radial-gradient(circle at 60% 40%, rgba(255,255,255,0.23) 0%, rgba(255,255,255,0.12) 36%, transparent 85%)"
+      style="background: radial-gradient(circle at 60% 40%, var(--glass-spot-1) 0%, var(--glass-spot-2) 40%, transparent 85%)"
     />
 
-    <!-- Extra shine/highlight streaks -->
     <div class="pointer-events-none absolute inset-0 z-20 opacity-40">
       <svg height="100%" width="100%">
         <defs>
@@ -109,7 +107,6 @@ onBeforeUnmount(() => {
       </svg>
     </div>
 
-    <!-- Navigation -->
     <nav
       aria-label="Main"
       class="font-manrope z-30 flex items-center gap-3 color-pureBlack md:gap-6 dark:color-pureWhite"
@@ -131,14 +128,29 @@ onBeforeUnmount(() => {
         {{ item.label }}
       </a>
     </nav>
-    <!-- ColorMode  -->
     <ColorMode />
   </header>
 </template>
 
+<!--
+  IMPORTANT: This must NOT be scoped!
+  This ensures :root and .dark vars work everywhere.
+-->
+<style>
+:root {
+  /* Very visible spot for light mode (dark gradient) */
+  --glass-spot-1: rgba(28, 30, 50, 0.18);
+  --glass-spot-2: rgba(28, 30, 50, 0.1);
+}
+.dark {
+  /* Visible white spot for dark mode */
+  --glass-spot-1: rgba(255, 255, 255, 0.25);
+  --glass-spot-2: rgba(255, 255, 255, 0.13);
+}
+</style>
+
 <style scoped>
 .liquid-glass-header {
-  /* Crisp blur & shine (Apple style) */
   -webkit-backdrop-filter: blur(16px) saturate(185%);
   backdrop-filter: blur(16px) saturate(185%);
   background-clip: padding-box;
@@ -160,7 +172,6 @@ button:focus-visible {
   outline: none !important;
   box-shadow: 0 0 0 3px #3b82f6aa !important;
 }
-
 @media (prefers-reduced-transparency: reduce) {
   .liquid-glass-header {
     background: #f8fafc !important;
