@@ -147,7 +147,7 @@ onMounted(() => {
             <div
               :class="useClsx(
                 'font-manrope slide-up max-w-[70%] my-4 break-words',
-                'rounded-xl px-4 py-2 color-pureBlack shadow',
+                'rounded-2xl px-4 py-3 color-pureBlack shadow',
                 'transition-colors duration-200 dark:color-pureWhite',
                 msg.role === 'user'
                   ? 'bg-indigo-8 text-white rounded-br-none'
