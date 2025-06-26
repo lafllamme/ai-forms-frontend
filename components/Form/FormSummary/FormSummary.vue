@@ -1,13 +1,11 @@
 <script lang="ts" setup>
-import { storeToRefs } from 'pinia'
-import { ref, watch } from 'vue'
 import ToggleButton from '@/components/Buttons/ToggleButton/ToggleButton.vue'
+import CheatHeader from '@/components/Chat/ChatHeader/CheatHeader.vue'
+import ProgressBar from '@/components/Form/ProgressBar/ProgressBar.vue'
+import HyperText from '@/components/Text/HyperText/HyperText.vue'
+import NumberTicker from '@/components/Text/NumberTicker/NumberTicker.vue'
 import { useStatus } from '@/composables/useStatus'
 import { useChatStore } from '@/stores/chat'
-import CheatHeader from '~/components/Chat/ChatHeader/CheatHeader.vue'
-import ProgressBar from '~/components/Form/ProgressBar/ProgressBar.vue'
-import HyperText from '~/components/Text/HyperText/HyperText.vue'
-import NumberTicker from '~/components/Text/NumberTicker/NumberTicker.vue'
 
 const summaryOpen = ref(true)
 const status = useStatus()
@@ -29,7 +27,6 @@ function patchStatusWithProgressClamp(newData: any) {
   if (!statusData.value)
     statusData.value = {}
 
-  // Always update all other fields
   for (const key of Object.keys(statusData.value)) {
     if (!(key in newData))
       delete statusData.value[key]
@@ -38,7 +35,6 @@ function patchStatusWithProgressClamp(newData: any) {
     statusData.value[key] = newData[key]
   }
 
-  // Clamp percent (never allow downwards jump)
   const incomingPercent = newData?.progress?.percentage_complete ?? 0
   if (incomingPercent >= lastPercent.value) {
     lastPercent.value = incomingPercent
@@ -53,7 +49,6 @@ function patchStatusWithProgressClamp(newData: any) {
   }
 }
 
-// genrate a timeout randomly between 8 and 12 seconds
 function getRandomTimeout() {
   return Math.floor(Math.random() * (12000 - 8000 + 1)) + 8000
 }
@@ -61,7 +56,7 @@ function getRandomTimeout() {
 function fetchStatus() {
   isLoading.value = true
   const timeout = getRandomTimeout()
-  consola.debug('[FormSummary] Fetching status with timeout:', timeout)
+  consola.debug?.('[FormSummary] Fetching status with timeout:', timeout)
 
   getStatus(sessionId.value)
     .then((res) => {
@@ -77,6 +72,10 @@ function fetchStatus() {
       setTimeout(fetchStatus, timeout)
     })
 }
+
+// -- Computed: progress percentage and phase
+const percentComplete = computed(() => statusData.value?.progress?.percentage_complete ?? 0)
+const phase = computed(() => statusData.value?.phase ?? '')
 
 watch(sessionId, (id) => {
   if (id)
@@ -316,10 +315,37 @@ watch(sessionId, (id) => {
         </Transition>
       </div>
     </Transition>
+
+    <!-- Sticky bottom progress message (outside Transition above, still inside .fixed sidebar div) -->
+    <div class="pointer-events-none fixed bottom-6 right-[calc(22rem+1.5rem)] z-[100] w-[calc(22rem-2.5rem)]">
+      <transition name="fade">
+        <div
+          v-if="percentComplete === 100 && phase !== 'done'"
+          class="pointer-events-auto border border-yellow-7 rounded-xl bg-yellow-1/90 px-4 py-2 text-center text-sm text-yellow-10 font-semibold shadow-lg"
+        >
+          Bitte bestätigen Sie die Übersicht
+        </div>
+        <div
+          v-else-if="percentComplete === 100 && phase === 'done'"
+          class="pointer-events-auto border border-green-8 rounded-xl bg-green-1/90 px-4 py-2 text-center text-sm text-green-10 font-semibold shadow-lg"
+        >
+          Vielen Dank für Ihre Eingabe!
+        </div>
+      </transition>
+    </div>
   </div>
 </template>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 /* Section fade/slide/blur/scale */
 .section-fade-slide-enter-active,
 .section-fade-slide-leave-active {
