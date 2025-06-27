@@ -61,6 +61,7 @@ function fetchStatus() {
   getStatus(sessionId.value)
     .then((res) => {
       patchStatusWithProgressClamp(res)
+      chatStore.setStatus(res)
       hasLoadedOnce = true
       errorMsg.value = null
       isLoading.value = false
