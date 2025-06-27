@@ -10,7 +10,7 @@ import RadiantText from '~/components/Text/RadiantText/RadiantText.vue'
 // <--- utility as before
 
 const chatStore = useChatStore()
-const { sessionId } = storeToRefs(chatStore)
+const { sessionId, status } = storeToRefs(chatStore)
 const { chatHistory, sendFormChat, clearChat, cancelFormChat } = useChat()
 const isMounted = ref(false)
 
@@ -113,6 +113,15 @@ function onGrowSpinEnd() {
     iconAnimPhase.value = 'spin'
 }
 
+const thinkPhrase = computed(() => {
+  if (status.value?.phase === 'formFields')
+    return 'Form Assistent füllt das Formular aus ...'
+  else if (status.value?.phase === 'confirmFields')
+    return 'Form Assistent überprüft die Eingaben ...'
+  else if (status.value?.phase === 'done')
+    return 'Form Assistent sendet das Formular ...'
+  return 'Form Assistant denkt nach ...'
+})
 onMounted(() => {
   isMounted.value = true
 })
@@ -162,7 +171,7 @@ onMounted(() => {
           <RadiantText
             class="font-manrope inline-flex items-center justify-start py-1 transition-all ease-out hover:text-gray-6 hover:duration-300"
           >
-            <span class="text-sm font-bold"> Form Assistant denkt nach ...</span>
+            <span class="text-sm font-bold">{{ thinkPhrase }}</span>
           </RadiantText>
         </div>
         <div class="pb-8" />
