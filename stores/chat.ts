@@ -3,6 +3,7 @@ import consola from 'consola'
 export interface ChatMessage {
   role: 'user' | 'assistant' | 'system'
   content: string
+  phase?: string // Optionally attach phase for per-message state
 }
 
 export interface ChatStatus {
@@ -13,17 +14,18 @@ export interface ChatStatus {
 }
 
 export const useChatStore = defineStore('chat', () => {
+  // ---- State ----
   const sessionId = ref<string>('')
   const history = ref<ChatMessage[]>([])
   const status = ref<ChatStatus | null>(null)
   const isLoading = ref(false)
 
-  // Logging
+  // ---- Logging ----
   function _log(msg: string, ...args: any[]) {
     consola.debug('[Chat Store] =>', msg, ...args)
   }
 
-  // -- Actions/Mutations --
+  // ---- Actions / Mutations ----
   function setSessionId(id: string) {
     sessionId.value = id
     _log('Session ID set:', id)
@@ -55,20 +57,28 @@ export const useChatStore = defineStore('chat', () => {
     isLoading.value = val
   }
 
-  // Computed: last message
-  const lastMessage = computed(() => history.value.at(-1))
+  // ---- Getters / Computed ----
+  const lastMessage = computed(() => history.value.at(-1) ?? null)
+  const phase = computed(() => {
+    if (status.value?.phase)
+      return status.value.phase
+  })
 
-  // Watchers for debug/logging
+  // ---- Watches ----
   watch(sessionId, v => _log('Session ID changed:', v))
   watch(status, v => _log('Status changed:', v), { deep: true })
 
+  // ---- Exported State & Methods ----
   return {
     // State
     sessionId,
     history,
     status,
     isLoading,
+
+    // Computed
     lastMessage,
+    phase,
 
     // Actions
     setSessionId,
