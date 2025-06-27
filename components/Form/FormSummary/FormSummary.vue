@@ -314,26 +314,26 @@ watch(sessionId, (id) => {
             </TransitionGroup>
           </div>
         </Transition>
+        <!-- Sticky bottom progress message (outside Transition above, still inside .fixed sidebar div) -->
+        <div>
+          <transition name="fade">
+            <div
+              v-if="percentComplete === 100 && phase !== 'done'"
+              class="font-manrope flex items-center justify-center px-6 text-lg color-indigo-12 font-semibold tracking-tight"
+            >
+              <Icon class="mr-2 inline-block size-6 color-indigo-10" name="iconoir:warning-triangle" />
+              Bitte bestätigen Sie ihre Eingaben
+            </div>
+            <div
+              v-else-if="percentComplete === 100 && phase === 'done'"
+              class="font-manrope flex items-center justify-center px-6 text-lg color-indigo-12 font-semibold tracking-tight"
+            >
+              Vielen Dank für Ihre Eingabe!
+            </div>
+          </transition>
+        </div>
       </div>
     </Transition>
-
-    <!-- Sticky bottom progress message (outside Transition above, still inside .fixed sidebar div) -->
-    <div class="pointer-events-none fixed bottom-6 right-[calc(22rem+1.5rem)] z-[100] w-[calc(22rem-2.5rem)]">
-      <transition name="fade">
-        <div
-          v-if="percentComplete === 100 && phase !== 'done'"
-          class="pointer-events-auto border border-yellow-7 rounded-xl bg-yellow-1/90 px-4 py-2 text-center text-sm text-yellow-10 font-semibold shadow-lg"
-        >
-          Bitte bestätigen Sie die Übersicht
-        </div>
-        <div
-          v-else-if="percentComplete === 100 && phase === 'done'"
-          class="pointer-events-auto border border-green-8 rounded-xl bg-green-1/90 px-4 py-2 text-center text-sm text-green-10 font-semibold shadow-lg"
-        >
-          Vielen Dank für Ihre Eingabe!
-        </div>
-      </transition>
-    </div>
   </div>
 </template>
 
@@ -342,6 +342,7 @@ watch(sessionId, (id) => {
 .fade-leave-active {
   transition: opacity 0.5s;
 }
+
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
