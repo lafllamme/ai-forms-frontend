@@ -208,38 +208,6 @@ watch(sessionId, (id) => {
           </div>
         </Transition>
 
-        <!-- Zusammenfassung: Animated, Staggered Chips -->
-        <Transition appear name="section-fade-slide">
-          <div
-            v-if="statusData?.phase === 'done' && statusData?.answers && Object.keys(statusData.answers).length"
-            class="mt-4 px-4 pb-6"
-          >
-            <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-12 font-light">
-              <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
-              <p>Deine bisherigen Eingaben</p>
-            </div>
-            <TransitionGroup v-if="true" class="flex flex-col gap-2" name="chip-fade-stagger" tag="div">
-              <div
-                v-for="(val, key, idx) in statusData.answers"
-                :key="key"
-              >
-                <div
-                  v-if="idx !== 0"
-                  :style="`transition-delay: ${idx * 90}ms`"
-                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 transition-all dark:bg-gray-7 hover:bg-indigo-4 dark:hover:bg-gray-5"
-                >
-                  <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
-                    {{ key }}
-                  </p>
-                  <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
-                    {{ val }}
-                  </p>
-                </div>
-              </div>
-            </TransitionGroup>
-          </div>
-        </Transition>
-
         <!-- Aktuelles Feld with swish/slide animation -->
         <div
           v-if="statusData?.progress?.current_field"
@@ -319,19 +287,55 @@ watch(sessionId, (id) => {
           <transition name="fade">
             <div
               v-if="percentComplete === 100 && phase !== 'done'"
-              class="font-manrope flex items-center justify-center px-6 text-lg color-indigo-12 font-semibold tracking-tight"
+              class="font-manrope flex items-center px-6 text-lg color-pureBlack font-semibold tracking-tight dark:color-pureWhite"
             >
-              <Icon class="mr-2 inline-block size-6 color-indigo-10" name="iconoir:warning-triangle" />
-              Bitte bestätigen Sie ihre Eingaben
+              Bitte bestätigen Sie das Formular
             </div>
             <div
               v-else-if="percentComplete === 100 && phase === 'done'"
-              class="font-manrope flex items-center justify-center px-6 text-lg color-indigo-12 font-semibold tracking-tight"
+              class="font-manrope flex items-center px-6 text-lg color-pureBlack font-semibold tracking-tight dark:color-pureWhite"
             >
-              Vielen Dank für Ihre Eingabe!
+              Vielen Dank für Ihre Geduld!
             </div>
           </transition>
         </div>
+
+        <!-- Zusammenfassung: Animated, Staggered Chips -->
+        <Transition appear name="section-fade-slide">
+          <div
+            v-if="(statusData?.phase === 'formFields' || 'done') && statusData?.answers && Object.keys(statusData.answers).length"
+            class="mt-4 px-6 pb-6"
+          >
+            <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-11 font-light">
+              <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
+              <p v-if="statusData?.phase === 'done'">
+                Deine Eingaben
+              </p>
+              <p v-else>
+                Deine bisherigen Eingaben
+              </p>
+            </div>
+            <TransitionGroup v-if="true" class="flex flex-col gap-2" name="chip-fade-stagger" tag="div">
+              <div
+                v-for="(val, key, idx) in statusData.answers"
+                :key="key"
+              >
+                <div
+                  v-if="idx !== 0"
+                  :style="`transition-delay: ${idx * 90}ms`"
+                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 transition-all dark:bg-gray-7 hover:bg-indigo-4 dark:hover:bg-gray-5"
+                >
+                  <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
+                    {{ key }}
+                  </p>
+                  <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
+                    {{ val }}
+                  </p>
+                </div>
+              </div>
+            </TransitionGroup>
+          </div>
+        </Transition>
       </div>
     </Transition>
   </div>
