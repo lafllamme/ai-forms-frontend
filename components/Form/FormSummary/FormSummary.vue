@@ -21,7 +21,7 @@ const statusData = ref<any>(null)
 const isLoading = ref(false)
 const errorMsg = ref<string | null>(null)
 const lastPercent = ref(0)
-let hasLoadedOnce = false
+let _hasLoadedOnce = false
 
 function patchStatusWithProgressClamp(newData: any) {
   if (!statusData.value)
@@ -62,7 +62,7 @@ function fetchStatus() {
     .then((res) => {
       patchStatusWithProgressClamp(res)
       chatStore.setStatus(res)
-      hasLoadedOnce = true
+      _hasLoadedOnce = true
       errorMsg.value = null
       isLoading.value = false
       setTimeout(fetchStatus, timeout)
@@ -283,19 +283,35 @@ watch(sessionId, (id) => {
           </div>
         </Transition>
         <!-- Sticky bottom progress message (outside Transition above, still inside .fixed sidebar div) -->
-        <div>
-          <transition name="fade">
+        <div class="my-4 px-6">
+          <transition name="status-message">
             <div
               v-if="percentComplete === 100 && phase !== 'done'"
-              class="font-manrope flex items-center px-6 text-lg color-pureBlack font-semibold tracking-tight dark:color-pureWhite"
+              class="flex items-center justify-start gap-3 border border-indigo-3 rounded-lg bg-indigo-1 px-5 py-3 shadow-sm transition-all duration-300 dark:border-indigo-9 dark:bg-gray-7"
             >
-              Bitte bestätigen Sie das Formular
+              <Icon class="size-6 color-indigo-11 animate-pulse" name="iconoir:chat-bubble-question" />
+              <div class="flex flex-col">
+                <span class="font-manrope text-nowrap text-base color-pureBlack font-bold tracking-tight dark:color-pureWhite">
+                  Bitte bestätigen Sie das Formular
+                </span>
+                <span class="font-geist text-xs color-gray-11 font-light">
+                  Alle erforderlichen Felder wurden ausgefüllt
+                </span>
+              </div>
             </div>
             <div
               v-else-if="percentComplete === 100 && phase === 'done'"
-              class="font-manrope flex items-center px-6 text-lg color-pureBlack font-semibold tracking-tight dark:color-pureWhite"
+              class="border-emerald-3 dark:border-emerald-9 hover:bg-emerald-2 flex items-center justify-start gap-3 border rounded-lg bg-indigo-1 px-5 py-3 shadow-sm transition-all duration-300 dark:bg-gray-7 dark:hover:bg-gray-3"
             >
-              Vielen Dank für Ihre Geduld!
+              <Icon class="size-6 color-indigo-9" name="ph:thumbs-up-bold" />
+              <div class="flex flex-col">
+                <span class="font-manrope text-lg color-pureBlack font-bold tracking-tight dark:color-pureWhite">
+                  Vielen Dank für Ihre Geduld!
+                </span>
+                <span class="font-geist text-nowrap text-xs color-gray-12 font-light">
+                  Ihr Formular wurde erfolgreich übermittelt
+                </span>
+              </div>
             </div>
           </transition>
         </div>
@@ -449,6 +465,29 @@ watch(sessionId, (id) => {
   transition:
     opacity 0.3s cubic-bezier(0.55, 0, 0.1, 1),
     transform 0.3s cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* Status message animation */
+.status-message-enter-active,
+.status-message-leave-active {
+  transition:
+    opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    filter 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.status-message-enter-from,
+.status-message-leave-to {
+  opacity: 0;
+  transform: translateY(15px) scale(0.98);
+  filter: blur(1px);
+}
+
+.status-message-enter-to,
+.status-message-leave-from {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  filter: blur(0);
 }
 
 /* Staggered chip animation for Zusammenfassung */
