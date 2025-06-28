@@ -88,6 +88,14 @@ function fetchStatus() {
 // -- Computed: progress percentage and phase
 const percentComplete = computed(() => statusData.value?.progress?.percentage_complete ?? 0)
 const phase = computed(() => statusData.value?.phase ?? '')
+const dotCount = 3
+const loadingDot = ref(0)
+
+onMounted(() => {
+  setInterval(() => {
+    loadingDot.value = (loadingDot.value + 1) % (dotCount + 1)
+  }, 900)
+})
 
 watch(sessionId, (id) => {
   if (id)
@@ -272,7 +280,18 @@ watch(sessionId, (id) => {
                       </div>
                     </div>
                   </div>
-                  <span class="font-manrope text-sm color-sky-11 font-medium">In Bearbeitung</span>
+                  <span class="font-manrope flex items-center text-sm color-sky-11 font-medium">
+                    In Bearbeitung
+                    <span aria-label="Lädt" class="ml-1 h-3 w-6 flex items-end">
+                      <span
+                        v-for="i in dotCount"
+                        :key="i"
+                        :class="[
+                          i <= loadingDot ? 'opacity-100 bg-sky-10' : 'opacity-20 bg-sky-7',
+                        ]" class="mx-0.5 inline-block h-1 w-1 rounded-full transition-opacity duration-200"
+                      />
+                    </span>
+                  </span>
                 </div>
               </Transition>
             </div>
