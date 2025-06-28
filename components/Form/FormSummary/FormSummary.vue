@@ -13,7 +13,7 @@ const showContent = ref(true) // ← NEW
 const status = useStatus()
 const chatStore = useChatStore()
 const { setOpen } = chatStore
-const { sessionId } = storeToRefs(chatStore)
+const { sessionId, isLoading } = storeToRefs(chatStore)
 const { getStatus } = status
 
 function toggleSummary() {
@@ -29,7 +29,6 @@ function toggleSummary() {
 }
 
 const statusData = ref<any>(null)
-const isLoading = ref(false)
 const errorMsg = ref<string | null>(null)
 const lastPercent = ref(0)
 let _hasLoadedOnce = false
@@ -65,22 +64,19 @@ function getRandomTimeout() {
 }
 
 function fetchStatus() {
-  isLoading.value = true
   const timeout = getRandomTimeout()
   consola.debug?.('[FormSummary] Fetching status with timeout:', timeout)
 
   getStatus(sessionId.value)
     .then((res) => {
       patchStatusWithProgressClamp(res)
-      chatStore.setStatus(res)
+      // chatStore.setStatus(res)
       _hasLoadedOnce = true
       errorMsg.value = null
-      isLoading.value = false
       setTimeout(fetchStatus, timeout)
     })
     .catch(() => {
       errorMsg.value = 'Fehler beim Laden des Status'
-      isLoading.value = false
       setTimeout(fetchStatus, timeout)
     })
 }
@@ -101,6 +97,10 @@ watch(sessionId, (id) => {
   if (id)
     fetchStatus()
 }, { immediate: true })
+
+watch(isLoading, (isLoading) => {
+  consola.debug('[FormSummary] isLoading changed:', isLoading)
+})
 </script>
 
 <template>
@@ -285,6 +285,7 @@ watch(sessionId, (id) => {
                     <span aria-label="Lädt" class="ml-1 h-3 w-6 flex items-end">
                       <span
                         v-for="i in dotCount"
+                        v-show="isLoading"
                         :key="i"
                         :class="[
                           i <= loadingDot ? 'opacity-100 bg-sky-10' : 'opacity-20 bg-sky-7',
