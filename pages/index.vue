@@ -45,7 +45,7 @@ consola.debug('Chat data fetched:', data.value)
       />
     </Transition>
     <div class="w-full flex justify-center">
-      <div class="max-w-[45rem] w-full flex">
+      <div class="max-w-[45rem] w-full flex 2xl:max-w-[60rem]">
         <FormChat />
       </div>
     </div>
