@@ -5,7 +5,7 @@ import FormSummary from '~/components/Form/FormSummary/FormSummary.vue'
 
 const { data } = await useFetch('/api/chat')
 const chatStore = useChatStore()
-const { isLoading } = storeToRefs(chatStore)
+const { isLoading, isOpen } = storeToRefs(chatStore)
 
 // Show after a minimum delay if loading
 const showBg = ref(false)
@@ -27,6 +27,7 @@ watch(isLoading, (val) => {
 })
 
 consola.debug('Chat data fetched:', data.value)
+const summaryWidth = computed(() => isOpen.value ? '22rem' : '1.75rem')
 </script>
 
 <template>
@@ -44,7 +45,12 @@ consola.debug('Chat data fetched:', data.value)
         class="[mask-image:linear-gradient(to_bottom,#00000,transparent)] bg-indigo-1A dark:[mask-image:linear-gradient(to_bottom,#D6E1FF,transparent)]"
       />
     </Transition>
-    <div class="w-full flex justify-center">
+    <div
+      :style="{
+        marginRight: summaryWidth,
+      }"
+      class="transition-[margin-right] w-full flex justify-center duration-300"
+    >
       <div class="max-w-[45rem] w-full flex 2xl:max-w-[60rem]">
         <FormChat />
       </div>

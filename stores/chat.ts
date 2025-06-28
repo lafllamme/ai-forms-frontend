@@ -19,6 +19,7 @@ export const useChatStore = defineStore('chat', () => {
   const history = ref<ChatMessage[]>([])
   const status = ref<ChatStatus | null>(null)
   const isLoading = ref(false)
+  const isOpen = ref(true)
 
   // ---- Logging ----
   function _log(msg: string, ...args: any[]) {
@@ -57,6 +58,11 @@ export const useChatStore = defineStore('chat', () => {
     isLoading.value = val
   }
 
+  function setOpen(val: boolean) {
+    isOpen.value = val
+    _log('Chat open state set:', val)
+  }
+
   // ---- Getters / Computed ----
   const lastMessage = computed(() => history.value.at(-1) ?? null)
   const phase = computed(() => {
@@ -75,6 +81,7 @@ export const useChatStore = defineStore('chat', () => {
     history,
     status,
     isLoading,
+    isOpen,
 
     // Computed
     lastMessage,
@@ -82,6 +89,7 @@ export const useChatStore = defineStore('chat', () => {
 
     // Actions
     setSessionId,
+    setOpen,
     addMessage,
     setHistory,
     setStatus,

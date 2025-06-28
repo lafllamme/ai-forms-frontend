@@ -10,11 +10,13 @@ import { useChatStore } from '@/stores/chat'
 const summaryOpen = ref(true)
 const status = useStatus()
 const chatStore = useChatStore()
+const { setOpen } = chatStore
 const { sessionId } = storeToRefs(chatStore)
 const { getStatus } = status
 
 function toggleSummary() {
   summaryOpen.value = !summaryOpen.value
+  setOpen(summaryOpen.value)
 }
 
 const statusData = ref<any>(null)
