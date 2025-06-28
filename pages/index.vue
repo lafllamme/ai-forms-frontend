@@ -27,7 +27,7 @@ watch(isLoading, (val) => {
 })
 
 consola.debug('Chat data fetched:', data.value)
-const summaryWidth = computed(() => isOpen.value ? '22rem' : '1.75rem')
+const summaryWidth = computed(() => isOpen.value ? '20rem' : '1.5rem')
 </script>
 
 <template>
