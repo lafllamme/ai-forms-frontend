@@ -158,22 +158,27 @@ watch(sessionId, (id) => {
               />
               <span class="font-dm-mono mt-0.5 text-xs color-gray-11">Requests</span>
             </div>
-            <div class="flex flex-1 flex-col items-center">
-              <div class="jetbrains-mono-regular text-xl color-gray-12 font-bold">
-                <NumberTicker
-                  :value="statusData?.analytics?.form_complexity ?? 0 "
+            <div
+              v-if="statusData?.analytics?.form_complexity > 0"
+              class="flex flex-1 flex-col items-center"
+            >
+              <div class="rounded-3xl rounded-bl-md rounded-tr-md bg-indigo-5 px-3 py-0.5 text-base color-sky-12 font-thin uppercase">
+                <HyperText
+                  :text="statusData?.analytics?.form_difficulty ?? 'Easy'"
+                  animate-on-load
+                  class="!p-0"
                 />
               </div>
               <span
                 class="font-dm-mono mt-0.5 text-xs color-gray-11 capitalize"
-              >{{ statusData?.analytics?.form_difficulty ?? 'Easy' }}</span>
+              >Komplexität</span>
             </div>
             <div class="flex flex-1 flex-col items-center">
               <span class="jetbrains-mono-regular text-xl color-gray-12 font-bold">{{
                 statusData?.progress?.answered_fields ?? 0
               }}</span>
               <span class="font-dm-mono mt-0.5 text-xs color-gray-11">
-                {{ statusData?.progress?.answered_fields > 1 ? 'Felder' : 'Feld' }}
+                {{ statusData?.progress?.answered_fields === 1 ? 'Feld' : 'Felder' }}
               </span>
             </div>
           </div>
@@ -185,7 +190,7 @@ watch(sessionId, (id) => {
 
         <!-- Formular Meta (now above "Aktuelles Feld") -->
         <Transition appear name="section-fade-slide">
-          <div key="meta" class="px-6 py-4">
+          <div key="meta" class="px-6 py-1">
             <div
               v-if="statusData?.receiver"
               class="font-geist mb-2 flex items-center justify-between b-1 text-xs color-gray-11 font-light font-medium tracking-tight"
@@ -282,48 +287,15 @@ watch(sessionId, (id) => {
             </TransitionGroup>
           </div>
         </Transition>
-        <!-- Sticky bottom progress message (outside Transition above, still inside .fixed sidebar div) -->
-        <div class="my-4 px-6">
-          <transition name="status-message">
-            <div
-              v-if="percentComplete === 100 && phase !== 'done'"
-              class="flex items-center justify-start gap-3 border border-indigo-3 rounded-lg bg-indigo-1 px-5 py-3 shadow-sm transition-all duration-300 dark:border-indigo-9 dark:bg-gray-7"
-            >
-              <Icon class="size-6 color-indigo-11 animate-pulse" name="iconoir:chat-bubble-question" />
-              <div class="flex flex-col">
-                <span class="font-manrope text-nowrap text-base color-pureBlack font-bold tracking-tight dark:color-pureWhite">
-                  Bitte bestätigen Sie das Formular
-                </span>
-                <span class="font-geist text-xs color-gray-11 font-light">
-                  Alle erforderlichen Felder wurden ausgefüllt
-                </span>
-              </div>
-            </div>
-            <div
-              v-else-if="percentComplete === 100 && phase === 'done'"
-              class="border-emerald-3 dark:border-emerald-9 hover:bg-emerald-2 flex items-center justify-start gap-3 border rounded-lg bg-indigo-1 px-5 py-3 shadow-sm transition-all duration-300 dark:bg-gray-7 dark:hover:bg-gray-3"
-            >
-              <Icon class="size-6 color-indigo-9" name="ph:thumbs-up-bold" />
-              <div class="flex flex-col">
-                <span class="font-manrope text-lg color-pureBlack font-bold tracking-tight dark:color-pureWhite">
-                  Vielen Dank für Ihre Geduld!
-                </span>
-                <span class="font-geist text-nowrap text-xs color-gray-12 font-light">
-                  Ihr Formular wurde erfolgreich übermittelt
-                </span>
-              </div>
-            </div>
-          </transition>
-        </div>
 
         <!-- Zusammenfassung: Animated, Staggered Chips -->
         <Transition appear name="section-fade-slide">
           <div
-            v-if="(statusData?.phase === 'formFields' || 'done') && statusData?.answers && Object.keys(statusData.answers).length"
-            class="mt-4 px-6 pb-6"
+            v-if="(statusData?.phase === 'formFields' || 'done') && statusData?.answers && Object.keys(statusData.answers).length > 1"
+            class="mt-2 px-6 pb-6"
           >
-            <div class="geist-regular mb-2 flex items-center gap-2 text-sm color-gray-11 font-light">
-              <Icon class="size-5 color-indigo-10" name="iconoir:attachment" />
+            <div class="geist-regular mb-2 flex items-center gap-2 text-base color-gray-12 font-light tracking-tight antialiased">
+              <Icon class="size-4 color-indigo-10" name="iconoir:attachment" />
               <p v-if="statusData?.phase === 'done'">
                 Deine Eingaben
               </p>
@@ -331,7 +303,7 @@ watch(sessionId, (id) => {
                 Deine bisherigen Eingaben
               </p>
             </div>
-            <TransitionGroup v-if="true" class="flex flex-col gap-2" name="chip-fade-stagger" tag="div">
+            <TransitionGroup class="flex flex-col gap-2" name="chip-fade-stagger" tag="div">
               <div
                 v-for="(val, key, idx) in statusData.answers"
                 :key="key"
@@ -339,12 +311,12 @@ watch(sessionId, (id) => {
                 <div
                   v-if="idx !== 0"
                   :style="`transition-delay: ${idx * 90}ms`"
-                  class="flex items-center gap-2 rounded-md bg-indigo-1 px-4 py-2 transition-all dark:bg-gray-7 hover:bg-indigo-4 dark:hover:bg-gray-5"
+                  class="flex items-center gap-2 rounded-lg bg-indigo-1 px-4 py-2.5 transition-all dark:bg-gray-7 hover:bg-indigo-4 dark:hover:bg-gray-5"
                 >
-                  <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider uppercase">
+                  <p class="font-dm-mono text-xs color-indigo-11 font-thin leading-none tracking-wider antialiased uppercase dark:color-sky-10">
                     {{ key }}
                   </p>
-                  <p class="geist-regular mb-1 text-base color-gray-12 font-medium leading-none">
+                  <p class="geist-regular text-base color-gray-12 font-medium leading-none">
                     {{ val }}
                   </p>
                 </div>
@@ -352,6 +324,48 @@ watch(sessionId, (id) => {
             </TransitionGroup>
           </div>
         </Transition>
+        <!-- Bottom progress message (outside Transition above, still inside .fixed sidebar div) -->
+        <Transition name="status-message">
+          <div
+            v-if="percentComplete === 100 && phase !== 'done'"
+            class="px-6"
+          >
+            <div class="flex items-center justify-evenly gap-3 rounded-3xl rounded-bl-md rounded-tr-md bg-indigo-1 p-3 dark:bg-gray-7">
+              <div class="flex items-center justify-center">
+                <Icon class="size-6 color-sky-11A" name="iconoir:chat-bubble-question" />
+              </div>
+              <div class="flex flex-col">
+                <span class="font-manrope text-nowrap text-base color-pureBlack font-bold tracking-normal dark:color-pureWhite">
+                  Bitte bestätigen Sie das Formular
+                </span>
+                <span class="font-geist text-xs color-gray-11 font-light tracking-tight">
+                  Alle erforderlichen Felder wurden ausgefüllt
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            v-else-if="percentComplete === 100 && phase === 'done'"
+            class="px-6"
+          >
+            <div class="flex items-center justify-evenly rounded-3xl rounded-bl-md rounded-tr-md bg-indigo-1 p-3 dark:bg-gray-7">
+              <div class="flex items-center justify-center">
+                <Icon class="size-8 color-sky-12" name="iconoir:badge-check" />
+              </div>
+              <div class="flex flex-col">
+                <span class="font-manrope text-nowrap text-base color-pureBlack font-bold tracking-normal dark:color-pureWhite">
+                  Vielen Dank für Ihre Geduld
+                </span>
+                <span class="font-geist text-xs color-gray-11 font-light tracking-tight">
+                  Wir melden uns in Kürze bei Ihnen
+                </span>
+              </div>
+            </div>
+          </div>
+        </Transition>
+        <!--        <div v-show="isLoading" class="color-red-12 animate-fade-in">
+          isLoading
+        </div> -->
       </div>
     </Transition>
   </div>
