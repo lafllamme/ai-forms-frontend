@@ -273,7 +273,11 @@ watch(sessionId, (id) => {
                 <NumberTicker :value="statusData.progress.missing_fields.length" />
               </div>
             </div>
-            <TransitionGroup name="list-fade-stagger" tag="div">
+            <TransitionGroup
+              key="list-fade-stagger"
+              name="list-fade-stagger"
+              tag="div"
+            >
               <div class="grid grid-cols-2 gap-2">
                 <div
                   v-for="(field, idx) in statusData.progress.missing_fields"
