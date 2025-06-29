@@ -163,7 +163,7 @@ onMounted(() => {
                   : 'bg-gray-8 text-base-content rounded-bl-none border border-base-300',
               )"
             >
-              <span v-html="msg.content" />
+              <span class="whitespace-pre-line" v-html="msg.content" />
             </div>
           </div>
         </template>
