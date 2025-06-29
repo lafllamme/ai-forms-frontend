@@ -82,7 +82,15 @@ function fetchStatus() {
 }
 
 // -- Computed: progress percentage and phase
-const percentComplete = computed(() => statusData.value?.progress?.percentage_complete ?? 0)
+const percentComplete = computed(() => {
+  const backend = statusData.value?.progress?.percentage_complete ?? 0
+  const currentPhase = statusData.value?.phase ?? ''
+  if (currentPhase !== 'done') {
+    return Math.min(backend, 90)
+  }
+  return backend
+})
+
 const phase = computed(() => statusData.value?.phase ?? '')
 const dotCount = 3
 const loadingDot = ref(0)
@@ -141,7 +149,7 @@ watch(isLoading, (isLoading) => {
               </div>
               <div class="pb-2">
                 <ProgressBar
-                  :percent="statusData?.progress?.percentage_complete ?? 0"
+                  :percent="percentComplete"
                   class="mb-1"
                   show-percent
                 />
@@ -369,7 +377,7 @@ watch(isLoading, (isLoading) => {
           <!-- Bottom progress message (outside Transition above, still inside .fixed sidebar div) -->
           <Transition name="status-message">
             <div
-              v-if="percentComplete === 100 && phase !== 'done'"
+              v-if="percentComplete === 90 && phase !== 'done'"
               class="px-6"
             >
               <div class="flex items-center justify-evenly gap-3 rounded-3xl rounded-bl-md rounded-tr-md bg-indigo-1 p-3 dark:bg-gray-7">
