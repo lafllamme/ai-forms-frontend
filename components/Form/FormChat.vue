@@ -193,7 +193,6 @@ onMounted(() => {
             :disabled="isLoading"
             autofocus
             placeholder="Stelle irgendeine Frage"
-            rows="1"
             @keydown="handleEnter"
           />
           <div class="flex items-center justify-end">

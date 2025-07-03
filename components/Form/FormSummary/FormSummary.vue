@@ -386,7 +386,7 @@ watch(isLoading, (isLoading) => {
                 </div>
                 <div class="flex flex-col">
                   <span class="font-manrope text-nowrap text-base color-pureBlack font-bold tracking-normal dark:color-pureWhite">
-                    Bitte bestätigen Sie das Formular
+                    Bitte bestätige das Formular
                   </span>
                   <span class="font-geist text-xs color-gray-11 font-light tracking-tight">
                     Alle erforderlichen Felder wurden ausgefüllt
