@@ -117,4 +117,4 @@ Learn more about deploying your Nuxt app in the
 
 ---
 
-Made with ❤️ for modern, conversational AI interfaces.
+Made with love by [Laflamme](https://github.com/lafllamme).
